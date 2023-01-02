@@ -8,7 +8,7 @@ export const socialLinks = [
   },
   {
     linkName: "Discord",
-    href: "",
+    href: "https://discord.gg/S3Dw9zBZPQ",
     icon: <FaDiscord />,
   },
   {

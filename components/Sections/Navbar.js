@@ -25,7 +25,9 @@ const Navbar = () => {
                 whileTap={{ scale: 0.9 }}
                 className="max-h-[1.5rem] max-w-[1.5rem] cursor-pointer"
               >
-                {link.icon}
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.icon}
+                </a>
               </motion.li>
             );
           })}

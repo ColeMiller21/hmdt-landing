@@ -12,11 +12,15 @@ const Footer = () => {
         {socialLinks.map((link, i) => {
           return (
             <motion.li
+              key={`${link.linkName}-${i}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="cursor-pointer px-[.75rem]"
             >
-              {link.linkName}
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {" "}
+                {link.linkName}
+              </a>
             </motion.li>
           );
         })}
