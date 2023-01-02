@@ -16,7 +16,13 @@ export const socialLinks = [
   {
     linkName: "Opensea",
     href: null,
-    icon: <img src="/OSLogo.png" alt="opensea logo" />,
+    icon: (
+      <img
+        src="/OSLogo.png"
+        alt="opensea logo"
+        style={{ height: "40px", width: "40px" }}
+      />
+    ),
     type: "social",
   },
   {
