@@ -8,13 +8,13 @@ const Footer = () => {
       <h6 className="my-[1rem]">
         HMDT <span>&copy;</span>Copyright 2023
       </h6>
-      <ul className="flex gap-[.75rem] flex-wrap justify-center px-[1.5rem]">
+      <ul className="flex flex-wrap justify-center px-[1.5rem] divide-x divide-white">
         {socialLinks.map((link, i) => {
           return (
             <motion.li
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="cursor-pointer"
+              className="cursor-pointer px-[.75rem]"
             >
               {link.linkName}
             </motion.li>
