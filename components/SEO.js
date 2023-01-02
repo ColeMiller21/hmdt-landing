@@ -38,8 +38,12 @@ const SEO = () => {
       }}
       additionalLinkTags={[{ rel: "icon", href: "/favicon.ico" }]}
       additionalMetaTags={[
-        { name: "viewport", content: "width=device-width, initial-scale=1" }
-        { name: "keywords", content: "help me debug this, debug, nft, nft collection, debug nfts, pixel, pixel nfts, help me debug this nft" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        {
+          name: "keywords",
+          content:
+            "help me debug this, debug, nft, nft collection, debug nfts, pixel, pixel nfts, help me debug this nft",
+        },
       ]}
       robotsProps={{
         nosnippet: true,
