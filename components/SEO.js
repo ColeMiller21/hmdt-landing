@@ -1,7 +1,7 @@
 import React from "react";
 import { NextSeo } from "next-seo";
 
-const baseUrl = "https://hmdt-landing.vercel.app/";
+const baseUrl = "https://www.helpmedebugthis.com/";
 
 const SEO = () => {
   return (
