@@ -20,7 +20,7 @@ export const socialLinks = [
       <img
         src="/OSLogo.png"
         alt="opensea logo"
-        style={{ height: "40px", width: "40px" }}
+        style={{ height: "25px", width: "25px" }}
       />
     ),
     type: "social",
