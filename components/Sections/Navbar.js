@@ -6,9 +6,7 @@ import { IconContext } from "react-icons";
 const Navbar = ({ toggleModal }) => {
   return (
     <nav className="min-w-screen min-h-[60px] flex justify-between items-center px-[1rem] md:px-[1.5rem] border-b-[1px] border-slate-700">
-      <div>
-        <h3 className="font-pixel">HMDT</h3>
-      </div>
+      <h3 className="font-pixel text-[#FAFAFA]">HMDT</h3>
       <ul className="flex gap-[0.75rem] font-pixel">
         <IconContext.Provider
           value={{

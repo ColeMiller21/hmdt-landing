@@ -27,6 +27,12 @@ body {
   background: #141414;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
 :root {
   --app-height: auto;
 }
@@ -82,4 +88,10 @@ body {
 .icons {
   max-height: 40px;
   max-width: 40px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
