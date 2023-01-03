@@ -3,16 +3,28 @@ import Image from "next/image";
 import { createImageUrl } from "../../utils/imageHelper";
 import { FaSearch } from "react-icons/fa";
 
+const gifPath = "/gif1.gif";
+
 const Landing = () => {
-  const initRandomNumber = Math.floor(Math.random() * 855) + 1;
-  const [searchedToken, setSearchedToken] = useState(initRandomNumber);
-  const [tokenId, setTokenId] = useState(initRandomNumber);
+  const [searchedTokenUrl, setSearchedTokenUrl] = useState(null);
+  const [searchedTokenId, setSearchedTokenId] = useState(null);
+  const [tokenId, setTokenId] = useState(null);
+  const [errorText, setErrorText] = useState("");
 
   const searchToken = () => {
-    if (!tokenId) {
+    if (!tokenId || tokenId.trim() === "") {
+      setErrorText(``);
+      setSearchedTokenId(null);
+      setSearchedTokenUrl(null);
+      return;
+    } else if (tokenId < 0 || tokenId > 855) {
+      setErrorText(`No token for tokenId: ${tokenId}`);
+      setSearchedTokenId(null);
+      setSearchedTokenUrl(null);
       return;
     }
-    setSearchedToken(Number(tokenId));
+    setSearchedTokenId(tokenId);
+    setSearchedTokenUrl(createImageUrl(Number(tokenId)));
   };
 
   const onEnterPressed = (event) => {
@@ -31,20 +43,26 @@ const Landing = () => {
         <div className="w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] aspect-square relative my-[1.5rem]">
           <Image
             style={{ objectFit: "contain" }}
-            src={createImageUrl(searchedToken)}
-            alt={`Help Me Debug This NFT #${searchedToken}`}
+            src={searchedTokenId ? searchedTokenUrl : gifPath}
+            alt={tokenId ? `Help Me Debug This NFT #${tokenId}` : "HMDT Gif"}
             fill
             priority={true}
           />
         </div>
-        <a
-          href={`https://opensea.io/assets/ethereum/0xdf0f0a5508aa4f506e5bdc8c45c8879e6e80d3e4/${tokenId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="cursor-pointer font-vcr"
-        >
-          Check it out on Opensea!
-        </a>
+        {searchedTokenId ? (
+          <a
+            href={`https://opensea.io/assets/ethereum/0xdf0f0a5508aa4f506e5bdc8c45c8879e6e80d3e4/${tokenId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer font-vcr"
+          >
+            <span className="font-vcr">
+              Check out HMDT #{searchedTokenId} on Opensea
+            </span>
+          </a>
+        ) : (
+          <span className="text-red-500 font-vcr">{errorText}</span>
+        )}
         <div className="my-[1.5rem]">
           <label className="relative ">
             <input
