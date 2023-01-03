@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 
 const Landing = () => {
   const [searchedToken, setSearchedToken] = useState(
-    Math.floor(Math.random() * 888) + 1
+    Math.floor(Math.random() * 855) + 1
   );
   const [tokenId, setTokenId] = useState("");
 
@@ -22,7 +22,6 @@ const Landing = () => {
       searchToken();
     }
   };
-  useEffect(() => {}, []);
 
   return (
     <section className="flex justify-center items-center min-h-full">
