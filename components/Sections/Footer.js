@@ -19,7 +19,12 @@ const Footer = () => {
                 whileTap={{ scale: 0.95 }}
                 className="cursor-pointer px-[.75rem]"
               >
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.linkName}
+                >
                   {" "}
                   {link.linkName}
                 </a>

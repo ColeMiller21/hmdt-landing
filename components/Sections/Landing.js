@@ -80,6 +80,7 @@ const Landing = () => {
               type="submit"
               onClick={searchToken}
               disabled={tokenId === ""}
+              aria-label="Search Token"
             >
               <FaSearch />
             </button>

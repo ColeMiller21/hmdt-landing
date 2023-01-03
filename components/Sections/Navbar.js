@@ -26,6 +26,7 @@ const Navbar = ({ toggleModal }) => {
                 >
                   {link.href ? (
                     <a
+                      aria-label={link.linkName}
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
