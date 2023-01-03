@@ -3,12 +3,12 @@ import Image from "next/image";
 import { createImageUrl } from "../../utils/imageHelper";
 import { FaSearch } from "react-icons/fa";
 
-const gifPath = "/gif1.gif";
+const gifPath = "/welcome.gif";
 
 const Landing = () => {
   const [searchedTokenUrl, setSearchedTokenUrl] = useState(null);
   const [searchedTokenId, setSearchedTokenId] = useState(null);
-  const [tokenId, setTokenId] = useState(null);
+  const [tokenId, setTokenId] = useState("");
   const [errorText, setErrorText] = useState("");
 
   const searchToken = () => {
