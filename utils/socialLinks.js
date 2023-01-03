@@ -32,13 +32,13 @@ export const socialLinks = [
     type: "social",
   },
   {
-    linkName: "Opensea HMDT",
+    linkName: "HMDT Opensea",
     collectionTitle: "Help Me Debug This",
     href: "https://opensea.io/collection/helpmedebugthis",
     type: "collection",
   },
   {
-    linkName: "Opensea HMDTG",
+    linkName: "HMDTG Opensea",
     collectionTitle: "Help Me Debug This Gift",
     href: "https://opensea.io/collection/helpmegiftthis",
     type: "collection",

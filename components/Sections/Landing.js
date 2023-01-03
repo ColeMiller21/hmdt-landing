@@ -4,10 +4,9 @@ import { createImageUrl } from "../../utils/imageHelper";
 import { FaSearch } from "react-icons/fa";
 
 const Landing = () => {
-  const [searchedToken, setSearchedToken] = useState(
-    Math.floor(Math.random() * 855) + 1
-  );
-  const [tokenId, setTokenId] = useState("");
+  const initRandomNumber = Math.floor(Math.random() * 855) + 1;
+  const [searchedToken, setSearchedToken] = useState(initRandomNumber);
+  const [tokenId, setTokenId] = useState(initRandomNumber);
 
   const searchToken = () => {
     if (!tokenId) {
