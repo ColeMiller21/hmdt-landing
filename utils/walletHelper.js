@@ -12,7 +12,7 @@ export const { chains, provider } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "GU Lore Generator",
+  appName: "Help Me Print ETH",
   chains,
 });
 
