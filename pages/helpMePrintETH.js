@@ -19,9 +19,11 @@ const helpMePrintETH = () => {
       />
       <section className="flex min-h-full w-screen">
         <div className="flex flex-col w-full p-[1rem] gap-[2rem]">
-          <h1 className=" font-pixel typewriter text-[3.5vw] xl:text-[2.75vw] my-[2rem] text-center">
-            Help Me Print ETH
-          </h1>
+          <div className="object-contain">
+            <h1 className=" font-pixel typewriter text-[3.5vw] xl:text-[2.75vw] my-[2rem] text-center">
+              Help Me Print ETH
+            </h1>
+          </div>
           <div className="flex-grow flex flex-col md:flex-row-reverse w-full md:my-[2.5rem]">
             <div className="flex justify-center items-center w-full">
               <div

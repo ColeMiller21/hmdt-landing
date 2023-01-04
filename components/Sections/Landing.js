@@ -89,19 +89,13 @@ const Landing = () => {
             </button>
           </label>
         </div>
-
-        <Link href="/helpMePrintETH">
-          <motion.a
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.96 }}
-            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] text-center font-vcr"
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Help Me Print ETH
-          </motion.a>
-        </Link>
+        <motion.span
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.96 }}
+          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] text-center font-vcr"
+        >
+          <Link href="/helpMePrintETH">Help Me Print ETH</Link>
+        </motion.span>
       </div>
     </section>
   );
