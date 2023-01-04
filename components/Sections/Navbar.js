@@ -2,11 +2,14 @@ import React from "react";
 import { motion } from "framer-motion";
 import { socialLinks } from "../../utils/socialLinks";
 import { IconContext } from "react-icons";
+import Link from "next/link";
 
 const Navbar = ({ toggleModal }) => {
   return (
     <nav className="min-w-screen min-h-[60px] flex justify-between items-center px-[1rem] md:px-[1.5rem] border-b-[1px] border-slate-700">
-      <h3 className="font-pixel text-[#FAFAFA]">HMDT</h3>
+      <Link href="/">
+        <h3 className="font-pixel text-[#FAFAFA] cursor-pointer">HMDT</h3>
+      </Link>
       <ul className="flex gap-[0.75rem] font-pixel">
         <IconContext.Provider
           value={{

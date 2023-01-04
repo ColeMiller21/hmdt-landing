@@ -35,7 +35,7 @@ const Landing = () => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-full">
+    <section className="flex justify-center items-center min-h-full w-screen">
       <div className="flex flex-col items-center">
         <h1 className=" font-pixel typewriter text-[3.5vw] xl:text-[2.75vw]">
           Help Me Debug This
@@ -47,6 +47,7 @@ const Landing = () => {
             alt={tokenId ? `Help Me Debug This NFT #${tokenId}` : "HMDT Gif"}
             fill
             priority={true}
+            unoptimized={true}
           />
         </div>
         {searchedTokenId ? (

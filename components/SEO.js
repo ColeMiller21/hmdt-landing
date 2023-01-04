@@ -3,15 +3,15 @@ import { NextSeo } from "next-seo";
 
 const baseUrl = "https://www.helpmedebugthis.com/";
 
-const SEO = () => {
+const SEO = ({ title, description, imagePath, path }) => {
   return (
     <NextSeo
-      title="Help Me Debug This"
-      description="Something is fundamentally wrong. H3lp M3 D3bu8 Th15! This is the website for the Genesis Collection for the !Debog Universe"
-      canonical={baseUrl}
+      title={title}
+      description={description}
+      canonical={path ? `${baseUrl}/${path}` : baseUrl}
       openGraph={{
-        url: baseUrl,
-        title: "Help Me Debug This",
+        url: path ? `${baseUrl}/${path}` : baseUrl,
+        title,
         description: "Something is fundamentally wrong. H3lp M3 D3bu8 Th15",
         images: [
           {
@@ -33,7 +33,7 @@ const SEO = () => {
       }}
       twitter={{
         handle: "@HelpMeDebugThis",
-        site: "@site",
+        site: baseUrl,
         cardType: "summary_large_image",
       }}
       additionalLinkTags={[{ rel: "icon", href: "/favicon.ico" }]}

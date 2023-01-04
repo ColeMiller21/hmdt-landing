@@ -14,9 +14,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-w-screen overflow-x-hidden min-full-page bg-[#141414] text-[#FAFAFA]">
       <Navbar toggleModal={toggleModal} />
-      <main className="flex-grow flex justify-center items-center">
-        {children}
-      </main>
+      <main className="flex-grow flex">{children}</main>
       <Footer />
       <Modal onClose={() => setShowModal(false)} show={showModal}>
         <OSModalContent />
