@@ -22,7 +22,7 @@ const UserActionSection = () => {
           <h6 className="mt-[1rem] lg:mt-0">Balance of $HP: {hpBalance}</h6>
           <h6>Current Bid: N/A</h6>
         </div>
-        <ConnectButton />
+        <ConnectButton showBalance={false} chainStatus="none" />
       </div>
       <div className="flex flex-col items-center gap-[1rem] py-[1rem]">
         <input
