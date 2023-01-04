@@ -15,6 +15,7 @@ const helpMePrintETH = () => {
       <SEO
         title="Help Me Print ETH"
         description="Something is fundamentally wrong. H3lp M3 D3bu8 Th15! This is the website for the Genesis Collection for the !Debog Universe"
+        path="/helpMePrintETH"
       />
       <section className="flex min-h-full w-screen">
         <div className="flex flex-col w-full p-[1rem] gap-[2rem]">
