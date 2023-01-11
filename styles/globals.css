@@ -40,7 +40,7 @@ select:focus {
 .min-full-page {
   min-height: var(--app-height) !important;
   min-width: 100vw;
-  max-height: var(--app-height) !important;
+  /* max-height: var(--app-height) !important; */
 }
 
 .modal-overlay {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
+import { ToastContainer } from "react-toastify";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, midnightTheme } from "@rainbow-me/rainbowkit";
