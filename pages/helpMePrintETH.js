@@ -122,7 +122,7 @@ const helpMePrintETH = () => {
                   className={`border border-1 border-slate-700 rounded flex ${
                     isConnected
                       ? "flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]"
-                      : "justify-center items-center h-[30%] aspect-video"
+                      : "justify-center items-center h-[60%] aspect-video w-[90%] md:w-[80%]"
                   }`}
                 >
                   {!isConnected ? (

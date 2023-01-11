@@ -23,7 +23,7 @@ const UserActionSection = ({ user, submitBid }) => {
     <>
       {user ? (
         <div className="flex flex-col w-full lg:gap-[1.5rem]">
-          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center">
+          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
             Bidding
           </h2>
 
@@ -49,7 +49,7 @@ const UserActionSection = ({ user, submitBid }) => {
               aria-label="Place Bid"
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
-              className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] text-center font-vcr"
+              className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[80%] text-center font-vcr"
               onClick={userSubmit}
               disabled={!user}
             >

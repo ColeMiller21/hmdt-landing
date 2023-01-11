@@ -92,7 +92,7 @@ const Landing = () => {
         <motion.span
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.96 }}
-          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] text-center font-vcr"
+          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr"
         >
           <Link href="/helpMePrintETH">Help Me Print ETH</Link>
         </motion.span>
