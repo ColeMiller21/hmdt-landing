@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useProvider } from "wagmi";
+import { reverseResolveAddress } from "../utils/ethersHelper";
 
 const TopBidTable = ({ users }) => {
   const [bids, setBids] = useState(users);
   const [loading, setLoading] = useState(true);
-
-  const getBids = async () => {
-    setTimeout(() => {
-      setBids(STUB_bids);
-      setLoading(false);
-    }, 2000);
-  };
+  const provider = useProvider();
 
   useEffect(() => {
     if (users) {
-      setLoading(false);
+      (async () => {
+        for (const user of users) {
+          let ensName = await reverseResolveAddress(provider, user.address);
+          user.displayAddress = ensName;
+        }
+        setLoading(false);
+      })();
     }
   }, [users]);
   return (
@@ -35,7 +37,7 @@ const Bids = ({ bids, loading }) => {
   }
 
   const formatAddress = (address) => {
-    if (!address) return;
+    if (!address || address?.includes(".eth")) return;
     return `${address.substring(0, 5)}....${address.substring(36, 42)}`;
   };
 
@@ -56,8 +58,10 @@ const Bids = ({ bids, loading }) => {
                 <span>
                   <strong>{bid.bidAmount}</strong>
                 </span>
-                <span className="lg:hidden">{formatAddress(bid.address)}</span>
-                <span className="hidden lg:block">{bid.address}</span>
+                <span className="lg:hidden">
+                  {formatAddress(bid.displayAddress)}
+                </span>
+                <span className="hidden lg:block">{bid.displayAddress}</span>
               </>
             ) : (
               <div className="animate-pulse flex space-x-4 w-full">
