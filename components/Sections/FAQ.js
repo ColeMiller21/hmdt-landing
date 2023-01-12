@@ -24,10 +24,30 @@ const FAQ = () => {
   return (
     <section id="faqs" className="flex flex-col">
       <div className="flex flex-col items-center w-full my-[2rem] ">
-        <header className="mb-[3rem] flex justify-center">
+        <header className="mb-[3rem] flex flex-col items-center justify-center">
           <h2 className="font-pixel text-[4vw] md:text-[2vw] my-[1.75rem] text-center">
             FAQs{" "}
           </h2>
+          <div className="text-[.9rem] md:text-[1rem] font-vcr text-white text-center w-[85%] md:w-[60%]">
+            <p className="my-[1rem]">
+              For detailed explanation, check the{" "}
+              <motion.a
+                href="https://hmdt.gitbook.io/helpmedebugthis-roadmap/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="gitbook link"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                GitBook
+              </motion.a>
+            </p>
+            <p>
+              Holders can use their $HP to bid on positions in the upcoming
+              Debog cycle. Three ways to get selected (all the selected holders
+              will be determined prior to each Debog Cycle):
+            </p>
+          </div>
         </header>
         <div className="flex justify-center w-full">
           <Accordion faqQuestions={hiddenTexts} />
