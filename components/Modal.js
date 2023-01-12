@@ -1,25 +1,38 @@
-import React, { useEffect, useState } from "react";
 import { IconContext } from "react-icons";
-import { FaTimes } from "react-icons/fa";
 import ReactDOM from "react-dom";
 
-const Modal = ({ show, onClose, children, title }) => {
-  const [isBrowser, setIsBrowser] = useState(false);
+/* eslint-disable @next/next/no-img-element */
+import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
+import { FaTimes } from "react-icons/fa";
 
-  useEffect(() => {
-    setIsBrowser(true);
-  }, []);
-
-  const handleCloseClick = (e) => {
-    e.preventDefault();
-    onClose();
+const ModalComponent = ({ show, onClose, children, title }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const appWidth = () => {
+    if (window.innerWidth <= 1127) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+    return window.innerWidth;
   };
 
-  const modalContent = show ? (
-    <div className="modal-overlay">
-      <div className="bg-[#141414] w-[90%] md:w-[50%]  rounded p-[1.5rem] border border-1 border-slate-700 shadow-xl flex flex-col gap-[2rem]">
-        <div className="flex justify-end text-[25px] h-[40px]">
-          <a href="#" onClick={handleCloseClick}>
+  useEffect(() => {
+    window.addEventListener("resize", appWidth);
+    appWidth();
+  }, []);
+
+  return (
+    <Modal
+      show={show}
+      onHide={onClose}
+      size={isMobile ? "md" : "lg"}
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body style={{ backgroundColor: "#141515" }}>
+        <div className="flex w-full justify-end">
+          <button className="text-2xl" onClick={onClose}>
             <IconContext.Provider
               value={{
                 color: "#FAFAFA",
@@ -29,22 +42,13 @@ const Modal = ({ show, onClose, children, title }) => {
             >
               <FaTimes />
             </IconContext.Provider>
-          </a>
+          </button>
         </div>
         {title && <h1>{title}</h1>}
         <div className="mb-[40px]">{children}</div>
-      </div>{" "}
-    </div>
-  ) : null;
-
-  if (isBrowser) {
-    return ReactDOM.createPortal(
-      modalContent,
-      document.getElementById("modal-root")
-    );
-  } else {
-    return null;
-  }
+      </Modal.Body>
+    </Modal>
+  );
 };
 
-export default Modal;
+export default ModalComponent;

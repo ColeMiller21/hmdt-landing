@@ -39,10 +39,12 @@ const Landing = () => {
   return (
     <section className="flex justify-center items-center min-h-full w-screen">
       <div className="flex flex-col items-center">
-        <h1 className=" font-pixel typewriter text-[3.5vw] xl:text-[2.75vw]">
-          Help Me Debug This
-        </h1>
-        <div className="w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] aspect-square relative my-[1.5rem]">
+        <div className="object-contain">
+          <h1 className=" font-pixel typewriter text-[4.5vw] xl:text-[2.75vw] text-center p-[1rem]">
+            Help Me Debug This
+          </h1>
+        </div>
+        <div className="w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] aspect-square relative my-[2rem]">
           <Image
             style={{ objectFit: "contain" }}
             src={searchedTokenId ? searchedTokenUrl : gifPath}
@@ -78,24 +80,29 @@ const Landing = () => {
             />
             <button
               className={
-                "absolute bottom-[-60%] right-0 px-4 text-white rounded bg-slate-700 h-[43px] w-[50px] cursor-pointer"
+                "absolute bottom-0 right-0  text-white rounded bg-slate-700 h-[43px] w-[50px] cursor-pointer"
               }
               type="submit"
               onClick={searchToken}
               disabled={tokenId === ""}
               aria-label="Search Token"
             >
-              <FaSearch />
+              <span className="w-full flex justify-center">
+                <FaSearch />
+              </span>
             </button>
           </label>
         </div>
-        <motion.span
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.96 }}
-          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr"
-        >
-          <Link href="/helpMePrintETH">Help Me Print ETH</Link>
-        </motion.span>
+
+        <Link href="/helpMePrintETH">
+          <motion.span
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.96 }}
+            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr  cursor-pointer"
+          >
+            Help Me Print ETH
+          </motion.span>
+        </Link>
       </div>
     </section>
   );

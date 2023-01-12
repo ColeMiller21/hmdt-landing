@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import { ToastContainer } from "react-toastify";
-import "../styles/globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider, midnightTheme } from "@rainbow-me/rainbowkit";
 import { chain, WagmiConfig } from "wagmi";
 import { chains, wagmiClient } from "../utils/walletHelper";
+import "../styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 
 export default function App({ Component, pageProps }) {
   const [showChild, setShowChild] = useState(false);

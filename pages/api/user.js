@@ -6,24 +6,24 @@ export default async function handler(req, res) {
   const { secret } = req.headers;
   const { user } = req.body;
 
-  console.log(req.body);
-
-  // if (!secret || secret !== process.env.HMDT_API_SECRET) {
-  //   return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
-  // }
-  console.log("BODY -- ", req.body);
-  console.log("--METHOD USED-- ", method);
+  if (!secret || secret !== process.env.HMDT_API_KEY) {
+    return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
+  }
   try {
     switch (method) {
       case "GET":
         // call get user
         let address = req.query.address;
-        console.log({ address });
-        const returnedUser = await getUser(address);
-        if (returnedUser) {
-          res.status(200).send({ user: returnedUser });
+        if (address) {
+          const result = await getUser(address);
+          if (result) {
+            res.send({ user: result });
+          } else {
+            res.send({ user: null });
+          }
         } else {
-          res.status(200).send({ user: null });
+          const result = await User.find({}).sort({ bidAmount: -1 }).limit(10);
+          res.send({ users: result });
         }
         break;
       case "POST":

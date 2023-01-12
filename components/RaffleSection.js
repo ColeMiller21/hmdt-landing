@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 
-const RaffleSection = ({ user, enrollUser }) => {
+const RaffleSection = ({ user, enrollUser, raffleThreshold }) => {
   const { address, isConnected } = useAccount();
   return (
     <>
@@ -13,6 +13,9 @@ const RaffleSection = ({ user, enrollUser }) => {
           <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
             Raffle
           </h2>
+          <p className="text-center font-vcr">
+            Current raffle threshold: {raffleThreshold}
+          </p>
           <p className="text-center font-vcr">
             Click the button below to ensure you are enrolled in the upcoming
             raffle.

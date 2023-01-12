@@ -1,4 +1,3 @@
-import { ErrorFragment } from "ethers/lib/utils";
 import connectMongo from "../../lib/connectMongo";
 import User from "../../lib/models/User";
 
@@ -7,20 +6,16 @@ export default async function handler(req, res) {
   const { secret } = req.headers;
   const { user } = req.body;
 
-  console.log(req.body);
+  if (!secret || secret !== process.env.HMDT_API_KEY) {
+    return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
+  }
 
-  // if (!secret || secret !== process.env.HMDT_API_SECRET) {
-  //   return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
-  // }
-  console.log("BODY -- ", req.body);
-  console.log("--METHOD USED-- ", method);
   if (method !== "PUT")
     res.status(404).send({ message: "This method is not supported!" });
   try {
-    // call update user
+    await connectMongo();
     if (!user) throw new Error("No user found in request body");
     let updatedUser = await enrollUser(user);
-    console.log("UPDATED USER: ", updatedUser);
     res
       .status(200)
       .send({ message: "Successfully updated user!", user: updatedUser });
@@ -38,12 +33,7 @@ const enrollUser = async (user) => {
         { designatedAddress: user?.designatedAddress },
       ],
     };
-
-    let result = await User.findOneAndUpdate(
-      filter,
-      { enrolled: user?.enrolled },
-      { new: true }
-    );
+    let result = await User.findOneAndUpdate(filter, user, { new: true });
     return result;
   } catch (err) {
     throw new Error(err);
