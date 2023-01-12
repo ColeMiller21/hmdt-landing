@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SyncLoader } from "react-spinners";
 import { motion } from "framer-motion";
-import { useAccount } from "wagmi";
+import { useAccount, useProvider } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import UserActionSection from "../components/UserActionSection";
 import TopBidTable from "../components/TopBidTable";
@@ -13,6 +13,9 @@ import connectMongo from "../lib/connectMongo";
 import User from "../lib/models/User";
 import Config from "../lib/models/Config";
 import Modal from "../components/Modal";
+import { getContract } from "../utils/getContract";
+import { formatBigNumber } from "../utils/ethersHelper";
+import FAQ from "../components/Sections/FAQ";
 
 export async function getServerSideProps(ctx) {
   await connectMongo();
@@ -29,6 +32,7 @@ export async function getServerSideProps(ctx) {
 const helpMePrintETH = ({ users, config }) => {
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
+  const provider = useProvider();
   const [topBidders, setTopBidders] = useState(users);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
@@ -46,6 +50,15 @@ const helpMePrintETH = ({ users, config }) => {
       setUser(null);
       return;
     }
+
+    let contract = getContract(provider, "hmdt");
+    let nfts = await contract.functions.balanceOf(data.user?.address);
+    nfts = formatBigNumber(nfts[0]);
+    if (!data.user || nfts === 0) {
+      setUser(null);
+      return;
+    }
+
     setUser(data.user);
   };
 
@@ -190,6 +203,7 @@ const helpMePrintETH = ({ users, config }) => {
               <TopBidTable users={topBidders} />
             </div>
           </div>
+          <FAQ />
         </div>
         <Modal
           onClose={() => setShowModal(false)}
