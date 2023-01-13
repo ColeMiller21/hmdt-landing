@@ -86,7 +86,7 @@ const helpMePrintETH = ({ users, config }) => {
       const message = `You cannot bid less then you already have bid.`;
       return { success: false, message };
     }
-    let payload = { ...user, currentBid: bidAmount };
+    let payload = { ...user, bidAmount };
     //will have to pass a secret before prod
     try {
       let { data } = await axios.put(

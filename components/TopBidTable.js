@@ -10,11 +10,13 @@ const TopBidTable = ({ users }) => {
 
   useEffect(() => {
     if (users) {
+      setLoading(true);
       (async () => {
         for (const user of users) {
           let ensName = await reverseResolveAddress(provider, user.address);
           user.displayAddress = ensName;
         }
+        setBids(users);
         setLoading(false);
       })();
     }
@@ -55,14 +57,14 @@ const Bids = ({ bids, loading }) => {
                   <strong>{bid.bidAmount}</strong>
                 </span>
                 <span className="lg:hidden">
-                  {bid?.displayAddress.includes(".eth")
+                  {bid?.displayAddress?.includes(".eth")
                     ? bid?.displayAddress
                     : formatAddress(bid.displayAddress)}
                 </span>
                 <span className="hidden lg:block">{bid.displayAddress}</span>
               </>
             ) : (
-              <div className="animate-pulse flex space-x-4 w-full">
+              <div className="animate-pulse flex space-x-4 w-full py-1">
                 <div className="flex-1 py-1">
                   <div className="space-y-2">
                     <div className="h-[.5rem] bg-slate-700 rounded"></div>
