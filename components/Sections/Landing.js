@@ -37,8 +37,8 @@ const Landing = () => {
   };
 
   return (
-    <section className="flex justify-center items-center min-h-full w-screen">
-      <div className="flex flex-col items-center">
+    <section className="flex min-h-full w-screen justify-center">
+      <div className="flex flex-col items-center justify-center h-full p-[2rem]">
         <div className="object-contain">
           <h1 className=" font-pixel typewriter text-[4.5vw] xl:text-[2.75vw] text-center p-[1rem]">
             Help Me Debug This
@@ -94,15 +94,15 @@ const Landing = () => {
           </label>
         </div>
 
-        <Link href="/helpMePrintETH">
-          <motion.span
-            whileHover={{ scale: 1.06 }}
-            whileTap={{ scale: 0.96 }}
-            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr  cursor-pointer"
-          >
-            Help Me Print ETH
-          </motion.span>
-        </Link>
+        <motion.span
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.96 }}
+          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr cursor-pointer"
+        >
+          <Link href="/helpMePrintETH">
+            <span className="w-full h-full">Help Me Print ETH</span>
+          </Link>
+        </motion.span>
       </div>
     </section>
   );

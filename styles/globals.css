@@ -37,6 +37,10 @@ select:focus {
   --app-height: auto;
 }
 
+a:hover {
+  color: white;
+}
+
 .min-full-page {
   min-height: var(--app-height) !important;
   min-width: 100vw;

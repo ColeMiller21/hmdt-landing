@@ -28,27 +28,20 @@ export default async function handler(req, res) {
         break;
       case "POST":
         if (!user) throw new Error("No user found in request body");
-        console.log(user);
         let createdUser = await createUser(user);
-        console.log("CREATED USER: ", createdUser);
         res
           .status(200)
           .send({ message: "Successfully created user!", user: createdUser });
         break;
       case "PUT":
-        // call update user
         if (!user) throw new Error("No user found in request body");
         let updatedUser = await updateUser(user);
-        console.log("UPDATED USER: ", updatedUser);
-        res
-          .status(200)
-          .send({ message: "Successfully updated user!", user: updatedUser });
+        res.send({ message: "Successfully updated user!", user: updatedUser });
         break;
       default:
         res.status(400).send({ message: "THIS METHOD IS NOT SUPPORTED" });
     }
   } catch (err) {
-    console.error(err);
     res.status(500).send(err);
   }
 }
@@ -57,9 +50,12 @@ const getUser = async (address) => {
   try {
     await connectMongo();
     const user = await User.findOne({
-      $or: [{ address: address }, { designatedAddress: address }],
+      $or: [
+        { address: address },
+        { designatedAddress: address },
+        { offChainWallet: address },
+      ],
     });
-    console.log("USER ", user);
     return user;
   } catch (err) {
     throw new Error(`No entry found with address: ${address}`);
@@ -67,12 +63,10 @@ const getUser = async (address) => {
 };
 
 const createUser = async (user) => {
-  console.log("User to create", user);
   try {
     await connectMongo();
     const newUser = new User(user);
     let save = await newUser.save();
-    console.log(save);
     return save;
   } catch (err) {
     throw new Error(`Error when trying to create user: ${err}`);
@@ -85,15 +79,11 @@ const updateUser = async (user) => {
       $or: [
         { address: user?.address },
         { designatedAddress: user?.designatedAddress },
+        { offChainWallet: user?.offChainWallet },
       ],
     };
 
-    // const result = await User.updateOne(filter, update);
-    let result = await User.findOneAndUpdate(
-      filter,
-      { bidAmount: Number(user?.currentBid) },
-      { new: true }
-    );
+    let result = await User.findOneAndUpdate(filter, user, { new: true });
     return result;
   } catch (err) {
     throw new Error(err);

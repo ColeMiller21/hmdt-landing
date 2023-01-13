@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useProvider } from "wagmi";
 import { reverseResolveAddress } from "../utils/ethersHelper";
+import { formatAddress } from "../utils/ethersHelper";
 
 const TopBidTable = ({ users }) => {
   const [bids, setBids] = useState(users);
@@ -36,11 +37,6 @@ const Bids = ({ bids, loading }) => {
     return null;
   }
 
-  const formatAddress = (address) => {
-    if (!address || address?.includes(".eth")) return;
-    return `${address.substring(0, 5)}....${address.substring(36, 42)}`;
-  };
-
   return (
     <div className="flex flex-col w-full divide-y divide-slate-700">
       <h2 className="font-pixel text-[4vw] md:text-[2vw] my-[1.75rem] text-center">
@@ -59,7 +55,9 @@ const Bids = ({ bids, loading }) => {
                   <strong>{bid.bidAmount}</strong>
                 </span>
                 <span className="lg:hidden">
-                  {formatAddress(bid.displayAddress)}
+                  {bid?.displayAddress.includes(".eth")
+                    ? bid?.displayAddress
+                    : formatAddress(bid.displayAddress)}
                 </span>
                 <span className="hidden lg:block">{bid.displayAddress}</span>
               </>

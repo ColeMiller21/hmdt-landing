@@ -16,3 +16,8 @@ export const reverseResolveAddress = async (provider, address) => {
   }
   return name[0][0];
 };
+
+export const formatAddress = (address) => {
+  if (!address || address?.includes(".eth")) return;
+  return `${address.substring(0, 5)}....${address.substring(36, 42)}`;
+};

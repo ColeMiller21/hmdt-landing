@@ -14,7 +14,7 @@ import User from "../lib/models/User";
 import Config from "../lib/models/Config";
 import Modal from "../components/Modal";
 import { getContract } from "../utils/getContract";
-import { formatBigNumber } from "../utils/ethersHelper";
+import { formatBigNumber, formatAddress } from "../utils/ethersHelper";
 import FAQ from "../components/Sections/FAQ";
 
 export async function getServerSideProps(ctx) {
@@ -40,10 +40,13 @@ const helpMePrintETH = ({ users, config }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [ifUserEnrollAmount, setIfUserEnrollAmount] = useState(null);
   const [newTotalBalance, setNewTotalBalance] = useState(null);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [offChainWallet, setOffChainWallet] = useState(null);
 
   const headers = {
     secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
   };
+
   const getDBUser = async (addr) => {
     let { data } = await axios.get(`/api/user?address=${addr}`, { headers });
     if (!data.user) {
@@ -135,6 +138,21 @@ const helpMePrintETH = ({ users, config }) => {
     await updateTopBidders();
   };
 
+  const updateOffChainWallet = async () => {
+    if (offChainWallet === "") return;
+    let userToUpdate = {
+      ...user,
+      offChainWallet,
+    };
+    let { data } = await axios.put(
+      "/api/user",
+      { user: userToUpdate },
+      { headers }
+    );
+    setUser(data.user);
+    setShowWalletModal(false);
+  };
+
   useEffect(() => {
     if (isConnected) {
       setLoadingUser(true);
@@ -170,6 +188,18 @@ const helpMePrintETH = ({ users, config }) => {
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
+                <div className="w-full flex justify-center items-center">
+                  <motion.button
+                    type="button"
+                    aria-label="Trigger Off Chain Wallet Modal"
+                    whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+                    onClick={() => setShowWalletModal(true)}
+                  >
+                    Set Off Chain Wallet
+                  </motion.button>
+                </div>
                 <div
                   className={`border border-1 border-slate-700 rounded flex ${
                     isConnected
@@ -205,6 +235,43 @@ const helpMePrintETH = ({ users, config }) => {
           </div>
           <FAQ />
         </div>
+        <Modal onClose={() => setShowWalletModal(false)} show={showWalletModal}>
+          <div className="flex flex-col gap-[1.5rem] items-center justify-center p-[1rem] font-vcr text-white text-center">
+            <p className="">
+              Use the input below to set a wallet to use incase your HMDT is in
+              a wallet that cannot interact with etherscan or if you want to set
+              an off-chain wallet
+            </p>
+            {user?.offChainWallet ? (
+              <div className="text-center">
+                <p>Current off chain wallet:</p>
+                <p className="lg:hidden">
+                  {formatAddress(user?.offChainWallet)}
+                </p>
+                <p className="hidden lg:block">{user?.offChainWallet}</p>
+              </div>
+            ) : (
+              <></>
+            )}
+            <input
+              type="text"
+              placeholder="Enter Address"
+              className="h-[45px] w-[250px] md:w-[400px] border-2 border-slate-700 rounded pl-2 text-[#FAFAFA] bg-[#141414] overflow-hidden font-vcr"
+              onChange={(e) => setOffChainWallet(e.target.value)}
+              value={offChainWallet}
+            />
+            <motion.button
+              type="button"
+              aria-label="Add Off Chain Wallet Button"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.96 }}
+              className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+              onClick={async () => await updateOffChainWallet()}
+            >
+              Add Wallet
+            </motion.button>
+          </div>
+        </Modal>
         <Modal
           onClose={() => setShowModal(false)}
           show={showModal}
@@ -217,7 +284,7 @@ const helpMePrintETH = ({ users, config }) => {
             <div className="flex flex-col justify-center items-center w-full gap-[1rem]">
               <motion.button
                 type="button"
-                aria-label="Connect Wallet Button"
+                aria-label="Enroll Button"
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.96 }}
                 className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
@@ -227,7 +294,7 @@ const helpMePrintETH = ({ users, config }) => {
               </motion.button>
               <motion.button
                 type="button"
-                aria-label="Connect Wallet Button"
+                aria-label="Cancel Button"
                 whileHover={{ scale: 1.06 }}
                 whileTap={{ scale: 0.96 }}
                 className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
