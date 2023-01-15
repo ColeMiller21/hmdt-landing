@@ -79,7 +79,7 @@ const updateUser = async (user) => {
       $or: [{ address: user?.address }],
     };
 
-    let result = await User.findOneAndUpdate(filter, user);
+    let result = await User.findOneAndUpdate(filter, user, { new: true });
     return result;
   } catch (err) {
     console.log(JSON.parse(err));

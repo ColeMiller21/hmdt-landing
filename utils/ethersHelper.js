@@ -21,3 +21,7 @@ export const formatAddress = (address) => {
   if (!address || address?.includes(".eth")) return;
   return `${address.substring(0, 5)}....${address.substring(36, 42)}`;
 };
+
+export const isValidAddress = (address) => {
+  return ethers.utils.isAddress(address);
+};

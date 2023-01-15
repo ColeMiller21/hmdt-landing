@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import ResponseMessage from "./ResponseMessage";
 
 const UserActionSection = ({ user, submitBid }) => {
   const [bidAmount, setBidAmount] = useState(0);
   const [errorText, setErrorText] = useState("");
+  const [successText, setSuccessText] = useState("");
 
   const userSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +18,11 @@ const UserActionSection = ({ user, submitBid }) => {
       }, 2500);
       return;
     }
+    setSuccessText(message);
     setBidAmount(0);
+    setTimeout(() => {
+      setSuccessText(null);
+    }, 2500);
   };
 
   return (
@@ -55,18 +61,12 @@ const UserActionSection = ({ user, submitBid }) => {
             >
               Submit Bid
             </motion.button>
-            {errorText !== "" ? (
-              <span className="font-vcr text-red-500 text-center">
-                {errorText}
-              </span>
-            ) : (
-              <></>
-            )}
+            <ResponseMessage error={errorText} success={successText} />
           </div>
         </div>
       ) : (
         <div className="flex flex-col w-full lg:gap-[1.5rem] items-center text-center">
-          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center">
+          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
             No Account
           </h2>
           <p className="font-vcr">

@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
+import ResponseMessage from "./ResponseMessage";
 
-const RaffleSection = ({ user, enrollUser, raffleThreshold }) => {
+const RaffleSection = ({
+  user,
+  enrollUser,
+  raffleThreshold,
+  error,
+  success,
+}) => {
   const { address, isConnected } = useAccount();
+  useEffect(() => {}, [error, success]);
   return (
     <>
       {user && isConnected ? (
@@ -41,6 +49,7 @@ const RaffleSection = ({ user, enrollUser, raffleThreshold }) => {
               </motion.button>
             )}
           </div>
+          <ResponseMessage error={error} success={success} />
         </div>
       ) : (
         <></>

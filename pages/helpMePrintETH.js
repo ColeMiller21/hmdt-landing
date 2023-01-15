@@ -14,8 +14,13 @@ import User from "../lib/models/User";
 import Config from "../lib/models/Config";
 import Modal from "../components/Modal";
 import { getContract } from "../utils/getContract";
-import { formatBigNumber, formatAddress } from "../utils/ethersHelper";
+import {
+  formatBigNumber,
+  formatAddress,
+  isValidAddress,
+} from "../utils/ethersHelper";
 import FAQ from "../components/Sections/FAQ";
+import ResponseMessage from "../components/ResponseMessage";
 
 export async function getServerSideProps(ctx) {
   await connectMongo();
@@ -42,6 +47,10 @@ const helpMePrintETH = ({ users, config }) => {
   const [newTotalBalance, setNewTotalBalance] = useState(null);
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [offChainWallet, setOffChainWallet] = useState(null);
+  const [enrollSuccess, setEnrollSuccess] = useState(null);
+  const [enrollError, setEnrollError] = useState(null);
+  const [ocwSuccess, setOCWSuccess] = useState(null);
+  const [ocwError, setOCWError] = useState(null);
 
   const headers = {
     secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
@@ -81,9 +90,9 @@ const helpMePrintETH = ({ users, config }) => {
       //show a toast message
       const message = `Do not have enough $HP to make bid: ${bidAmount}`;
       return { success: false, message };
-    } else if (bidAmount < user?.bidAmount) {
+    } else if (bidAmount <= user?.bidAmount) {
       //show a toast message
-      const message = `You cannot bid less then you already have bid.`;
+      const message = `You cannot bid less or equal then you already have bid.`;
       return { success: false, message };
     }
     let payload = { ...user, bidAmount };
@@ -94,6 +103,7 @@ const helpMePrintETH = ({ users, config }) => {
         { user: payload },
         { headers }
       );
+      setEnrollSuccess("");
       setUser(data.user);
       await updateTopBidders();
       return { success: true, message: "Bid Submitted Successfully" };
@@ -110,10 +120,13 @@ const helpMePrintETH = ({ users, config }) => {
     let balanceAfterEnrollment = userAvailableBalance - config?.raffleThreshold;
     if (balanceAfterEnrollment < 0) {
       let ifUseBidAmountBalance = balanceAfterEnrollment + user?.bidAmount;
-      setModalMessage(`Your current bidAmount does not leave you with enough HP to enter the raffle.
+      let totalBalance = balanceAfterEnrollment + user?.totalBalance;
+      setModalMessage(`Your current bid amount does not leave you with enough HP to enter the raffle.
                   Would you like to use some of you bid to cover the cost? This would reduce your 
-                  bid amount from ${user?.bidAmount} to ${ifUseBidAmountBalance}. Please confirm.`);
+                  bid amount from ${user?.bidAmount} to ${ifUseBidAmountBalance} and use the remaining amount of your total balance.
+                   Please confirm.`);
       setIfUserEnrollAmount(ifUseBidAmountBalance);
+      setNewTotalBalance(totalBalance);
       return;
     }
     setModalMessage(
@@ -127,16 +140,30 @@ const helpMePrintETH = ({ users, config }) => {
     let userToUpdate = {
       ...user,
       enrolled: true,
-      bidAmount: ifUserEnrollAmount ? ifUserEnrollAmount : user?.bidAmount,
-      totalBalance: newTotalBalance ? newTotalBalance : user?.totalBalance,
+      bidAmount:
+        ifUserEnrollAmount !== null ? ifUserEnrollAmount : user?.bidAmount,
+      totalBalance:
+        newTotalBalance !== null ? newTotalBalance : user?.totalBalance,
     };
-    let { data } = await axios.put(
-      "/api/enrollUser",
-      { user: userToUpdate },
-      { headers }
-    );
-    setUser(data.user);
-    setShowModal(false);
+    try {
+      let { data } = await axios.put(
+        "/api/enrollUser",
+        { user: userToUpdate },
+        { headers }
+      );
+      setUser(data.user);
+      setEnrollSuccess("Successfully enrolled!");
+      setTimeout(() => {
+        setEnrollSuccess(null);
+      }, 2500);
+      setShowModal(false);
+    } catch (err) {
+      console.log(err);
+      setEnrollError(err.message);
+      setTimeout(() => {
+        setEnrollError(null);
+      }, 2500);
+    }
     await updateTopBidders();
   };
 
@@ -144,15 +171,34 @@ const helpMePrintETH = ({ users, config }) => {
     if (offChainWallet === "") return;
     let userToUpdate = {
       ...user,
-      offChainWallet,
+      offChainWallet: offChainWallet.trim(),
     };
-    let { data } = await axios.put(
-      "/api/user",
-      { user: userToUpdate },
-      { headers }
-    );
-    setUser(data.user);
-    setShowWalletModal(false);
+    if (!isValidAddress(offChainWallet.trim())) {
+      setOCWError("Not a valid ERC20 address");
+      setTimeout(() => {
+        setOCWError(null);
+      }, 2500);
+      return;
+    }
+
+    try {
+      let { data } = await axios.put(
+        "/api/user",
+        { user: userToUpdate },
+        { headers }
+      );
+      setUser(data.user);
+      setOCWSuccess("Successfully set off chain wallet!");
+      setTimeout(() => {
+        setOCWSuccess(null);
+        setShowWalletModal(false);
+      }, 1500);
+    } catch (err) {
+      setOCWError(err.message);
+      setTimeout(() => {
+        setOCWError(null);
+      }, 1500);
+    }
   };
 
   useEffect(() => {
@@ -172,7 +218,7 @@ const helpMePrintETH = ({ users, config }) => {
         description="Something is fundamentally wrong. H3lp M3 D3bu8 Th15! This is the website for the Genesis Collection for the !Debog Universe"
         path="/helpMePrintETH"
       />
-      <section className="flex min-h-full w-screen">
+      <section className="flex min-h-full w-full">
         <div className="flex flex-col w-full p-[1rem] gap-[2rem] px-[1rem]">
           <div className="object-contain">
             <h1 className=" font-pixel typewriter text-[4.5vw] xl:text-[2.75vw] text-center p-[1rem]">
@@ -190,23 +236,27 @@ const helpMePrintETH = ({ users, config }) => {
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
-                <div className="w-full flex justify-center items-center">
-                  <motion.button
-                    type="button"
-                    aria-label="Trigger Off Chain Wallet Modal"
-                    whileHover={{ scale: 1.06 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
-                    onClick={() => setShowWalletModal(true)}
-                  >
-                    Set Off Chain Wallet
-                  </motion.button>
-                </div>
+                {user ? (
+                  <div className="w-full flex justify-center items-center">
+                    <motion.button
+                      type="button"
+                      aria-label="Trigger Off Chain Wallet Modal"
+                      whileHover={{ scale: 1.06 }}
+                      whileTap={{ scale: 0.96 }}
+                      className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+                      onClick={() => setShowWalletModal(true)}
+                    >
+                      Set Off Chain Wallet
+                    </motion.button>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <div
                   className={`border border-1 border-slate-700 rounded flex ${
                     isConnected
                       ? "flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]"
-                      : "justify-center items-center h-[60%] aspect-video w-[90%] md:w-[80%]"
+                      : "justify-center items-center h-[60%] md:h-[30%] aspect-video w-[90%] md:w-[80%]"
                   }`}
                 >
                   {!isConnected ? (
@@ -221,13 +271,17 @@ const helpMePrintETH = ({ users, config }) => {
                       Connect Wallet
                     </motion.button>
                   ) : (
-                    <UserActionSection user={user} submitBid={submitBid} />
+                    <>
+                      <UserActionSection user={user} submitBid={submitBid} />
+                    </>
                   )}
                 </div>
                 <RaffleSection
                   user={user}
                   enrollUser={triggerModal}
                   raffleThreshold={config?.raffleThreshold}
+                  error={enrollError}
+                  success={enrollSuccess}
                 />
               </div>
             )}
@@ -272,6 +326,7 @@ const helpMePrintETH = ({ users, config }) => {
             >
               Add Wallet
             </motion.button>
+            <ResponseMessage error={ocwError} success={ocwSuccess} />
           </div>
         </Modal>
         <Modal
@@ -305,6 +360,7 @@ const helpMePrintETH = ({ users, config }) => {
                 Cancel
               </motion.button>
             </div>
+            <ResponseMessage error={ocwError} success={ocwSuccess} />
           </div>
         </Modal>
       </section>

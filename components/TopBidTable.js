@@ -24,7 +24,7 @@ const TopBidTable = ({ users }) => {
   return (
     <div className="flex flex-col gap-[2rem] items-center w-full my-[2rem]">
       <div
-        className={`border border-1 border-slate-700 rounded flex flex-col w-[90%] md:w-[80%] px-[1.5rem] h-[70%] overflow-auto`}
+        className={`border border-1 border-slate-700 rounded flex flex-col w-[90%]  px-[1.5rem] h-[70%] overflow-auto`}
       >
         <Bids bids={users} loading={loading} />
       </div>
@@ -56,12 +56,12 @@ const Bids = ({ bids, loading }) => {
                 <span>
                   <strong>{bid.bidAmount}</strong>
                 </span>
-                <span className="lg:hidden">
+                <span className="xl:hidden">
                   {bid?.displayAddress?.includes(".eth")
                     ? bid?.displayAddress
                     : formatAddress(bid.displayAddress)}
                 </span>
-                <span className="hidden lg:block">{bid.displayAddress}</span>
+                <span className="hidden xl:block">{bid.displayAddress}</span>
               </>
             ) : (
               <div className="animate-pulse flex space-x-4 w-full py-1">
