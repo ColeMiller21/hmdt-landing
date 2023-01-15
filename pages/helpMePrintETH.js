@@ -18,6 +18,7 @@ import {
   formatBigNumber,
   formatAddress,
   isValidAddress,
+  ALCHEMY_PROVIDER,
 } from "../utils/ethersHelper";
 import FAQ from "../components/Sections/FAQ";
 import ResponseMessage from "../components/ResponseMessage";
@@ -63,13 +64,13 @@ const helpMePrintETH = ({ users, config }) => {
       return;
     }
 
-    // let contract = getContract(provider, "hmdt");
-    // let nfts = await contract.functions.balanceOf(data.user?.address);
-    // nfts = formatBigNumber(nfts[0]);
-    // if (!data.user || nfts === 0) {
-    //   setUser(null);
-    //   return;
-    // }
+    let contract = getContract(ALCHEMY_PROVIDER, "hmdt");
+    let nfts = await contract.functions.balanceOf(data.user?.address);
+    nfts = formatBigNumber(nfts[0]);
+    if (!data.user || nfts === 0) {
+      setUser(null);
+      return;
+    }
 
     setUser(data.user);
   };
