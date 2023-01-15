@@ -216,7 +216,7 @@ const helpMePrintETH = ({ users, config }) => {
     <>
       <SEO
         title="Help Me Print ETH"
-        description="Something is fundamentally wrong. H3lp M3 D3bu8 Th15! This is the website for the Genesis Collection for the !Debog Universe"
+        description="A mechanism that holders pay NOTHING, need NO gas-required operations on their end, and get ETH winnings from an algorithmic-trading protocol (aka HMDT Algo-Bot)"
         path="/helpMePrintETH"
       />
       <section className="flex min-h-full w-full">
