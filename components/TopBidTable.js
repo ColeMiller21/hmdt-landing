@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useProvider } from "wagmi";
 import { reverseResolveAddress } from "../utils/ethersHelper";
-import { formatAddress } from "../utils/ethersHelper";
+import { formatAddress, ALCHEMY_PROVIDER } from "../utils/ethersHelper";
 
 const TopBidTable = ({ users }) => {
   const [bids, setBids] = useState(users);
@@ -33,7 +33,6 @@ const TopBidTable = ({ users }) => {
 };
 
 export default TopBidTable;
-
 const Bids = ({ bids, loading }) => {
   if (!bids) {
     return null;
