@@ -116,7 +116,9 @@ const helpMePrintETH = ({ users, config }) => {
       setIfUserEnrollAmount(ifUseBidAmountBalance);
       return;
     }
-    setModalMessage("Awesome enough HP! You are now enrolled!");
+    setModalMessage(
+      "Awesome you have enough HP! Confirm to enroll in the raffle!"
+    );
     let totalBalance = user?.totalBalance - config?.raffleThreshold;
     setNewTotalBalance(totalBalance);
   };

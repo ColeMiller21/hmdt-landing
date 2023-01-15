@@ -76,16 +76,13 @@ const createUser = async (user) => {
 const updateUser = async (user) => {
   try {
     const filter = {
-      $or: [
-        { address: user?.address },
-        { designatedAddress: user?.designatedAddress },
-        { offChainWallet: user?.offChainWallet },
-      ],
+      $or: [{ address: user?.address }],
     };
 
-    let result = await User.findOneAndUpdate(filter, user, { new: true });
+    let result = await User.findOneAndUpdate(filter, user);
     return result;
   } catch (err) {
+    console.log(JSON.parse(err));
     throw new Error(err);
   }
 };
