@@ -38,8 +38,9 @@ const FAQ = () => {
                 aria-label="gitbook link"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="underline"
               >
-                GitBook
+                <i>GitBook</i>
               </motion.a>
             </p>
             <p>
