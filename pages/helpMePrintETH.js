@@ -52,6 +52,7 @@ const helpMePrintETH = ({ users, config }) => {
   const [enrollError, setEnrollError] = useState(null);
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
+  const [showUnenrollModal, setShowUnenrollModal] = useState(false);
 
   const headers = {
     secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
@@ -175,6 +176,40 @@ const helpMePrintETH = ({ users, config }) => {
     await updateTopBidders();
   };
 
+  const unenrollUser = async () => {
+    let newTotalBalance = user?.totalBalance + config?.raffleThreshold;
+    if (typeof newTotalBalance !== "number") {
+      return;
+    }
+    let userToUpdate = {
+      ...user,
+      enrolled: false,
+      totalBalance: newTotalBalance,
+    };
+
+    try {
+      let { data } = await axios.put(
+        "/api/enrollUser",
+        { user: userToUpdate },
+        { headers }
+      );
+      setUser(data.user);
+      setEnrollSuccess("Successfully unenrolled!");
+      setTimeout(() => {
+        setEnrollSuccess(null);
+      }, 2500);
+      setShowUnenrollModal(false);
+    } catch (err) {
+      console.log(err);
+      setEnrollError(err.message);
+      setTimeout(() => {
+        setEnrollError(null);
+      }, 2500);
+    }
+
+    await updateTopBidders();
+  };
+
   const updateOffChainWallet = async () => {
     if (offChainWallet === "") return;
     let userToUpdate = {
@@ -287,6 +322,7 @@ const helpMePrintETH = ({ users, config }) => {
                 <RaffleSection
                   user={user}
                   enrollUser={triggerModal}
+                  unenrollUser={() => setShowUnenrollModal(true)}
                   raffleThreshold={config?.raffleThreshold}
                   error={enrollError}
                   success={enrollSuccess}
@@ -299,6 +335,30 @@ const helpMePrintETH = ({ users, config }) => {
           </div>
           <FAQ />
         </div>
+        <Modal
+          onClose={() => setShowUnenrollModal(false)}
+          show={showUnenrollModal}
+        >
+          <div className="flex flex-col p-[2rem]">
+            <p className="font-vcr text-white text-center mb-[2rem]">
+              Click Unenroll to unenroll raffle threshold of -{" "}
+              {config?.raffleThreshold} will be added to your $HP balance.
+            </p>
+            <div className="flex flex-col justify-center items-center w-full gap-[1rem]">
+              <motion.button
+                type="button"
+                aria-label="Enroll Button"
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.96 }}
+                className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+                onClick={unenrollUser}
+              >
+                Unenroll
+              </motion.button>
+            </div>
+            <ResponseMessage error={ocwError} success={ocwSuccess} />
+          </div>
+        </Modal>
         <Modal onClose={() => setShowWalletModal(false)} show={showWalletModal}>
           <div className="flex flex-col gap-[1.5rem] items-center justify-center p-[1rem] font-vcr text-white text-center">
             <p className="">

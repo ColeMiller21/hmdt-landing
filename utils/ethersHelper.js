@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { getContract } from "./getContract";
 
 export const formatBigNumber = (hex) => {
-  console.log(hex);
   let bigNumber = ethers.BigNumber.from(hex);
   const number = bigNumber.toNumber();
   return number;

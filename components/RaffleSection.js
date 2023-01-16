@@ -6,6 +6,7 @@ import ResponseMessage from "./ResponseMessage";
 const RaffleSection = ({
   user,
   enrollUser,
+  unenrollUser,
   raffleThreshold,
   error,
   success,
@@ -28,14 +29,26 @@ const RaffleSection = ({
             Click the button below to ensure you are enrolled in the upcoming
             raffle.
           </p>
-          <div className="w-full flex justify-center items-center ">
+          <div className="w-full flex  flex-col gap-[1rem] justify-center items-center ">
             {user?.enrolled ? (
-              <button
-                disabled={true}
-                className="px-[1.5rem] py-[.75rem] bg-slate-300 text-slate-800 text-vcr w-[80%] text-center font-vcr"
-              >
-                You Are Enrolled!
-              </button>
+              <>
+                <button
+                  disabled={true}
+                  className="px-[1.5rem] py-[.75rem] bg-slate-300 text-slate-800 text-vcr w-[80%] text-center font-vcr"
+                >
+                  You Are Enrolled!
+                </button>
+                <motion.button
+                  type="button"
+                  aria-label="Connect Wallet Button"
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[80%] text-center font-vcr"
+                  onClick={() => unenrollUser()}
+                >
+                  Unenroll Now
+                </motion.button>
+              </>
             ) : (
               <motion.button
                 type="button"
