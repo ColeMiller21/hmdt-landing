@@ -116,6 +116,13 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const triggerModal = async () => {
+    if (user?.totalBalance < config?.raffleThreshold) {
+      setEnrollError("You do not have enough $HP to enroll this cycle");
+      setTimeout(() => {
+        setEnrollError(null);
+      }, 2500);
+      return;
+    }
     setShowModal(true);
     let userAvailableBalance = user?.totalBalance - user?.bidAmount;
     let balanceAfterEnrollment = userAvailableBalance - config?.raffleThreshold;
