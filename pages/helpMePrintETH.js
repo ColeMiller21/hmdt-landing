@@ -25,7 +25,7 @@ import ResponseMessage from "../components/ResponseMessage";
 
 export async function getServerSideProps(ctx) {
   await connectMongo();
-  const users = await User.find({}).sort({ bidAmount: -1 }).limit(10);
+  const users = await User.find({}).sort({ bidAmount: -1 }).limit(12);
   const config = await Config.findOne({ page: "hmpe" });
   return {
     props: {
@@ -53,6 +53,11 @@ const helpMePrintETH = ({ users, config }) => {
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
   const [showUnenrollModal, setShowUnenrollModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferAmount, setTransferAmount] = useState(0);
+  const [transferError, setTransferError] = useState(null);
+  const [transferSuccess, setTransferSuccess] = useState(null);
+  const [transferToAddress, setTransferToAddress] = useState(null);
 
   const headers = {
     secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
@@ -65,24 +70,23 @@ const helpMePrintETH = ({ users, config }) => {
       return;
     }
 
-    let contract = getContract(ALCHEMY_PROVIDER, "hmdt");
-    let nfts = await contract.functions.balanceOf(data.user?.address);
-    nfts = formatBigNumber(nfts[0]);
-    if (!data.user || nfts === 0) {
-      setUser(null);
-      return;
-    }
+    // let contract = getContract(ALCHEMY_PROVIDER, "hmdt");
+    // let nfts = await contract.functions.balanceOf(data.user?.address);
+    // nfts = formatBigNumber(nfts[0]);
+    // if (!data.user || nfts === 0) {
+    //   setUser(null);
+    //   return;
+    // }
 
     setUser(data.user);
   };
 
   const updateTopBidders = async () => {
-    let { data } = await axios.get(`/api/user?address`, { headers });
+    let { data } = await axios.get(`/api/user`, { headers });
     setTopBidders(data.users);
   };
 
   const submitBid = async (bidAmount) => {
-    // console.log(bidAmount);
     if (bidAmount == 0) {
       //show toast message
       const message = "Bid amount cannot be 0";
@@ -98,7 +102,6 @@ const helpMePrintETH = ({ users, config }) => {
       return { success: false, message };
     }
     let payload = { ...user, bidAmount };
-    //will have to pass a secret before prod
     try {
       let { data } = await axios.put(
         `/api/user`,
@@ -244,6 +247,66 @@ const helpMePrintETH = ({ users, config }) => {
     }
   };
 
+  const transferHP = async () => {
+    if (transferAmount == 0 || !transferToAddress) {
+      setTransferError("Must have an amount > 0 and valid address");
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+      return;
+    } else if (!isValidAddress(transferToAddress.trim())) {
+      setTransferError("Must submit a valid address");
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+      return;
+    } else if (transferAmount > user?.totalBalance - user?.bidAmount) {
+      setTransferError("Cannot send more HP than max amount above");
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+      return;
+    }
+    let userToUpdate = {
+      ...user,
+      totalBalance: user?.totalBalance - transferAmount,
+    };
+    let transferPayload = {
+      user: userToUpdate,
+      transferAmount,
+      transferToAddress: transferToAddress.trim(),
+    };
+
+    try {
+      let { data } = await axios.post(
+        "/api/transfer",
+        { transferPayload },
+        { headers }
+      );
+      setUser(data.user);
+      setTransferSuccess("Successfully transferred HP!");
+      setTimeout(() => {
+        setTransferSuccess(null);
+        setTransferAmount(0);
+        setTransferToAddress(null);
+        setShowTransferModal(false);
+      }, 2500);
+    } catch (err) {
+      setTransferError(
+        "500 Error: Ensure transfer to address is a registered holder of HMDT"
+      );
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+    }
+  };
+
+  const closeAndResetTransferModal = () => {
+    setShowTransferModal(false);
+    setTransferAmount(0);
+    setTransferToAddress(null);
+  };
+
   useEffect(() => {
     if (isConnected) {
       setLoadingUser(true);
@@ -280,7 +343,7 @@ const helpMePrintETH = ({ users, config }) => {
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
                 {user ? (
-                  <div className="w-full flex justify-center items-center">
+                  <div className="w-full flex flex-col justify-center items-center gap-[1.5rem]">
                     <motion.button
                       type="button"
                       aria-label="Trigger Off Chain Wallet Modal"
@@ -291,6 +354,20 @@ const helpMePrintETH = ({ users, config }) => {
                     >
                       Set Off Chain Wallet
                     </motion.button>
+                    {user?.totalBalance - user?.bidAmount > 0 ? (
+                      <motion.button
+                        type="button"
+                        aria-label="Trigger Transfer HP Wallet Modal"
+                        whileHover={{ scale: 1.06 }}
+                        whileTap={{ scale: 0.96 }}
+                        className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+                        onClick={() => setShowTransferModal(true)}
+                      >
+                        Transfer $HP
+                      </motion.button>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 ) : (
                   <></>
@@ -335,6 +412,51 @@ const helpMePrintETH = ({ users, config }) => {
           </div>
           <FAQ />
         </div>
+        <Modal
+          onClose={() => closeAndResetTransferModal()}
+          show={showTransferModal}
+        >
+          <div className="flex flex-col gap-[1.5rem] items-center justify-center p-[1rem] font-vcr text-white text-center">
+            <p className="">
+              Max transfer amount: {user?.totalBalance - user?.bidAmount}
+            </p>
+            <div className="flex justify-center items-center gap-[1rem]">
+              <label for="hp amount">Amount to transfer</label>
+              <input
+                name="hp amount"
+                type="number"
+                min={0}
+                max={user?.totalBalance - user?.bidAmount}
+                placeholder="HP"
+                className="h-[45px] w-[50px] border-2 border-slate-700 rounded pl-2 text-[#FAFAFA] bg-[#141414] overflow-hidden font-vcr"
+                onChange={(e) => setTransferAmount(e.target.value)}
+                value={transferAmount}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label for="transferTo"> Transfer to address:</label>
+              <input
+                name="transferTo"
+                type="text"
+                placeholder="Enter Address"
+                className="h-[45px] w-[250px] md:w-[400px] border-2 border-slate-700 rounded pl-2 text-[#FAFAFA] bg-[#141414] overflow-hidden font-vcr"
+                onChange={(e) => setTransferToAddress(e.target.value)}
+                value={transferToAddress}
+              />
+            </div>
+            <motion.button
+              type="button"
+              aria-label="Transfer Button"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.96 }}
+              className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+              onClick={async () => await transferHP()}
+            >
+              Transfer HP
+            </motion.button>
+            <ResponseMessage error={transferError} success={transferSuccess} />
+          </div>
+        </Modal>
         <Modal
           onClose={() => setShowUnenrollModal(false)}
           show={showUnenrollModal}

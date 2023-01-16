@@ -24,7 +24,13 @@ export const formatAddress = (address) => {
 export const isValidAddress = (address) => {
   return ethers.utils.isAddress(address);
 };
+
 export const ALCHEMY_PROVIDER = new ethers.providers.AlchemyProvider(
   "mainnet",
+  process.env.NEXT_PUBLIC_ALCHEMY_ID
+);
+
+export const GOERLI_PROVIDER = new ethers.providers.AlchemyProvider(
+  "goerli",
   process.env.NEXT_PUBLIC_ALCHEMY_ID
 );

@@ -22,7 +22,7 @@ export default async function handler(req, res) {
             res.send({ user: null });
           }
         } else {
-          const result = await User.find({}).sort({ bidAmount: -1 }).limit(10);
+          const result = await User.find({}).sort({ bidAmount: -1 }).limit(12);
           res.send({ users: result });
         }
         break;

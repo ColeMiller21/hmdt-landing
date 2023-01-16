@@ -47,7 +47,9 @@ const Bids = ({ bids, loading }) => {
       {bids.map((bid, i) => {
         return (
           <div
-            className="flex justify-between basis-1/4 items-center p-[1rem] font-vcr"
+            className={`flex justify-between basis-1/4 items-center p-[1rem] font-vcr ${
+              i < 8 ? "text-orange-400 " : "text-white"
+            }`}
             key={`${bid.address}-${i}`}
           >
             {!loading ? (
