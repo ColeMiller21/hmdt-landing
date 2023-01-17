@@ -266,6 +266,12 @@ const helpMePrintETH = ({ users, config }) => {
         setTransferError(null);
       }, 2500);
       return;
+    } else if (transferToAddress.toLowerCase() === user?.address) {
+      setTransferError("Cannot transfer to your own address");
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+      return;
     }
     let userToUpdate = {
       ...user,
