@@ -30,6 +30,7 @@ export const ALCHEMY_PROVIDER = new ethers.providers.AlchemyProvider(
   process.env.NEXT_PUBLIC_ALCHEMY_ID
 );
 
+
 export const GOERLI_PROVIDER = new ethers.providers.AlchemyProvider(
   "goerli",
   process.env.NEXT_PUBLIC_ALCHEMY_ID

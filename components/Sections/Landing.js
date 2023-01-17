@@ -49,6 +49,7 @@ const Landing = () => {
             style={{ objectFit: "contain" }}
             src={searchedTokenId ? searchedTokenUrl : gifPath}
             alt={tokenId ? `Help Me Debug This NFT #${tokenId}` : "HMDT Gif"}
+            unoptimized={true}
             fill
             priority={true}
             unoptimized={true}

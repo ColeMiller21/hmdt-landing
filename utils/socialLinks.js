@@ -9,7 +9,7 @@ export const socialLinks = [
   },
   {
     linkName: "Discord",
-    href: "https://discord.gg/S3Dw9zBZPQ",
+    href: "https://discord.gg/helpmedebugthis",
     icon: <FaDiscord />,
     type: "social",
   },
@@ -38,8 +38,8 @@ export const socialLinks = [
     type: "collection",
   },
   {
-    linkName: "HMDTG Opensea",
-    collectionTitle: "Help Me Debug This Gift",
+    linkName: "HMGT Opensea",
+    collectionTitle: "Help Me Gift This",
     href: "https://opensea.io/collection/helpmegiftthis",
     type: "collection",
   },
