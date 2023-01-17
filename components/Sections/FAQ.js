@@ -15,9 +15,9 @@ const FAQ = () => {
         "All the holders will have the equal probability to get selected once their $HP exceeds the threshold (this threshold will be lower than HP median/mean over the entire holder distributing), in order to cover most of our holders. Threshold $HP will be deducted from the balance of raffle winners.",
     },
     {
-      question: "🔥 (2 spots) Activator raffle:",
+      question: "🔥 (2 spots) Engagement Group:",
       answer:
-        "The most active HMDT holders on Twitter/DC will be added to the activator list. 1-2 activators will be raffled as selected holders for each Debog cycle.",
+        " The most engaged HMDT holders on Twitter/DC will be added to the engagement group. 2 deboggers from the engagement group will be selected holders for each Debog cycle. Current downtime for each selected holder: 1 Debog Cycle (meaning if you get selected in this group for this debog cycle, you cannot get selected for this group in the next debog cycle).",
     },
   ];
 
@@ -44,9 +44,8 @@ const FAQ = () => {
               </motion.a>
             </p>
             <p>
-              Holders can use their $HP to bid on positions in the upcoming
-              Debog cycle. Three ways to get selected (all the selected holders
-              will be determined prior to each Debog Cycle):
+            There are three ways to get selected for HelpMePrintETH (all the selected holders will be determined prior to each Debog Cycle). 
+            Holders can use their $HP to bid on positions and/or enter into the raffle for the upcoming Debog cycle:
             </p>
           </div>
         </header>
