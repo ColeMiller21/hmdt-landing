@@ -52,6 +52,7 @@ const helpMePrintETH = ({ users, config }) => {
   const [enrollError, setEnrollError] = useState(null);
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
+
   const [showUnenrollModal, setShowUnenrollModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [transferAmount, setTransferAmount] = useState(0);
@@ -87,6 +88,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const submitBid = async (bidAmount) => {
+    bidAmount = Math.round(bidAmount)
     if (bidAmount == 0) {
       //show toast message
       const message = "Bid amount cannot be 0";
@@ -141,9 +143,8 @@ const helpMePrintETH = ({ users, config }) => {
       setNewTotalBalance(totalBalance);
       return;
     }
-    setModalMessage(
-      "Awesome you have enough HP! Confirm to enroll in the raffle!"
-    );
+    setModalMessage("Awesome you have enough HP! You are qualified to sign up for the raffle!");
+
     let totalBalance = user?.totalBalance - config?.raffleThreshold;
     setNewTotalBalance(totalBalance);
   };
@@ -176,6 +177,7 @@ const helpMePrintETH = ({ users, config }) => {
         setEnrollError(null);
       }, 2500);
     }
+
     await updateTopBidders();
   };
 
@@ -245,11 +247,19 @@ const helpMePrintETH = ({ users, config }) => {
         setOCWError(null);
       }, 1500);
     }
+
   };
 
   const transferHP = async () => {
-    if (transferAmount == 0 || !transferToAddress) {
+    let transferAmountInt = Math.round(transferAmount)
+    if (transferAmount <= 0 || !transferToAddress) {
       setTransferError("Must have an amount > 0 and valid address");
+      setTimeout(() => {
+        setTransferError(null);
+      }, 2500);
+      return;
+    } else if (transferAmount != transferAmountInt) {
+      setTransferError("Transfer amount must be an integer");
       setTimeout(() => {
         setTransferError(null);
       }, 2500);
@@ -292,7 +302,7 @@ const helpMePrintETH = ({ users, config }) => {
         { headers }
       );
       setUser(data.user);
-      setTransferSuccess("Successfully transferred HP!");
+      setTransferSuccess("Successfully transferred HPD!");
       setTimeout(() => {
         setTransferSuccess(null);
         setTransferAmount(0);
@@ -301,7 +311,7 @@ const helpMePrintETH = ({ users, config }) => {
       }, 2500);
     } catch (err) {
       setTransferError(
-        "500 Error: Ensure transfer to address is a registered holder of HMDT"
+        "500 Error: Ensure transfer to address that is a registered holder of HMDT"
       );
       setTimeout(() => {
         setTransferError(null);
@@ -350,6 +360,7 @@ const helpMePrintETH = ({ users, config }) => {
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
+
                 {user ? (
                   <div className="w-full flex flex-col justify-center items-center gap-[1.5rem]">
                     <motion.button
@@ -360,7 +371,8 @@ const helpMePrintETH = ({ users, config }) => {
                       className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
                       onClick={() => setShowWalletModal(true)}
                     >
-                      Set Off Chain Wallet
+
+                      Set Delegate Wallet
                     </motion.button>
                     {user?.totalBalance - user?.bidAmount > 0 ? (
                       <motion.button
@@ -371,7 +383,7 @@ const helpMePrintETH = ({ users, config }) => {
                         className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
                         onClick={() => setShowTransferModal(true)}
                       >
-                        Transfer $HP
+                        Transfer $HPD
                       </motion.button>
                     ) : (
                       <></>
@@ -494,7 +506,7 @@ const helpMePrintETH = ({ users, config }) => {
             <p className="">
               Use the input below to set a wallet to use incase your HMDT is in
               a wallet that cannot interact with etherscan or if you want to set
-              an off-chain wallet
+              an delegate wallet
             </p>
             {user?.offChainWallet ? (
               <div className="text-center">
