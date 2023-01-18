@@ -30,7 +30,11 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export async function getServerSideProps(ctx) {
+const headers = {
+  secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
+};
+
+export async function getStaticProps(ctx) {
   await connectMongo();
   const users = await User.find({}).sort({ bidAmount: -1 }).limit(12);
   const config = await Config.findOne({ page: "hmpe" });
@@ -59,17 +63,12 @@ const helpMePrintETH = ({ users, config }) => {
   const [enrollError, setEnrollError] = useState(null);
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
-
   const [showUnenrollModal, setShowUnenrollModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [transferAmount, setTransferAmount] = useState(0);
   const [transferError, setTransferError] = useState(null);
   const [transferSuccess, setTransferSuccess] = useState(null);
   const [transferToAddress, setTransferToAddress] = useState(null);
-
-  const headers = {
-    secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
-  };
 
   const getDBUser = async (addr) => {
     let { data } = await axios.get(`/api/user?address=${addr}`, { headers });

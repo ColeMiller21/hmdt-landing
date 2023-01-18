@@ -52,7 +52,6 @@ const Landing = () => {
             unoptimized={true}
             fill
             priority={true}
-            unoptimized={true}
           />
         </div>
         {searchedTokenId ? (
@@ -95,15 +94,14 @@ const Landing = () => {
           </label>
         </div>
 
-        <motion.span
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.96 }}
-          className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white w-full md:w-[70%] text-center font-vcr cursor-pointer"
+        <Link
+          href="/helpMePrintETH"
+          className="px-[1.5rem] py-[.75rem] bg-slate-700 hover:bg-slate-600 text-white w-[250px] md:w-[400px] text-center font-vcr cursor-pointer"
         >
-          <Link href="/helpMePrintETH">
+          <motion.span whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.96 }}>
             <span className="w-full h-full">Help Me Print ETH</span>
-          </Link>
-        </motion.span>
+          </motion.span>
+        </Link>
       </div>
     </section>
   );

@@ -6,8 +6,6 @@ export default async function handler(req, res) {
   const { secret } = req.headers;
   const { config } = req.body;
 
-  console.log(req.body);
-
   // if (!secret || secret !== process.env.HMDT_API_SECRET) {
   //   return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
   // }
@@ -17,7 +15,7 @@ export default async function handler(req, res) {
     switch (method) {
       case "GET":
         const returnedConfigs = await getAllConfigs();
-        if (returnedConfig) {
+        if (returnedConfigs) {
           res.status(200).send({ config: returnedConfigs });
         } else {
           res.status(200).send({ user: null });
