@@ -22,6 +22,13 @@ import {
 } from "../utils/ethersHelper";
 import FAQ from "../components/Sections/FAQ";
 import ResponseMessage from "../components/ResponseMessage";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+// import localizedFormat from "daysjs/plugin/localizedFormat";
+// dayjs.extend(localizedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function getServerSideProps(ctx) {
   await connectMongo();
@@ -70,16 +77,16 @@ const helpMePrintETH = ({ users, config }) => {
       setUser(null);
       return;
     }
+    await setUserWithNFTCount(data.user);
+  };
 
+  const setUserWithNFTCount = async (user) => {
     let contract = getContract(ALCHEMY_PROVIDER, "hmdt");
-    let nfts = await contract.functions.balanceOf(data.user?.address);
+    let nfts = await contract.functions.balanceOf(user?.address);
     nfts = formatBigNumber(nfts[0]);
-    if (!data.user || nfts === 0) {
-      setUser(null);
-      return;
-    }
-
-    setUser(data.user);
+    user.nftCount = nfts;
+    setUser(user);
+    return;
   };
 
   const updateTopBidders = async () => {
@@ -88,7 +95,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const submitBid = async (bidAmount) => {
-    bidAmount = Math.round(bidAmount)
+    bidAmount = Math.round(bidAmount);
     if (bidAmount == 0) {
       //show toast message
       const message = "Bid amount cannot be 0";
@@ -111,7 +118,7 @@ const helpMePrintETH = ({ users, config }) => {
         { headers }
       );
       setEnrollSuccess("");
-      setUser(data.user);
+      await setUserWithNFTCount(data.user);
       await updateTopBidders();
       return { success: true, message: "Bid Submitted Successfully" };
     } catch (err) {
@@ -143,7 +150,9 @@ const helpMePrintETH = ({ users, config }) => {
       setNewTotalBalance(totalBalance);
       return;
     }
-    setModalMessage("Awesome you have enough HP! You are qualified to sign up for the raffle!");
+    setModalMessage(
+      "Awesome you have enough HP! You are qualified to sign up for the raffle!"
+    );
 
     let totalBalance = user?.totalBalance - config?.raffleThreshold;
     setNewTotalBalance(totalBalance);
@@ -164,7 +173,8 @@ const helpMePrintETH = ({ users, config }) => {
         { user: userToUpdate },
         { headers }
       );
-      setUser(data.user);
+      await setUserWithNFTCount(data.user);
+      await updateTopBidders();
       setEnrollSuccess("Successfully enrolled!");
       setTimeout(() => {
         setEnrollSuccess(null);
@@ -177,8 +187,6 @@ const helpMePrintETH = ({ users, config }) => {
         setEnrollError(null);
       }, 2500);
     }
-
-    await updateTopBidders();
   };
 
   const unenrollUser = async () => {
@@ -198,7 +206,8 @@ const helpMePrintETH = ({ users, config }) => {
         { user: userToUpdate },
         { headers }
       );
-      setUser(data.user);
+      await setUserWithNFTCount(data.user);
+      await updateTopBidders();
       setEnrollSuccess("Successfully unenrolled!");
       setTimeout(() => {
         setEnrollSuccess(null);
@@ -211,8 +220,6 @@ const helpMePrintETH = ({ users, config }) => {
         setEnrollError(null);
       }, 2500);
     }
-
-    await updateTopBidders();
   };
 
   const updateOffChainWallet = async () => {
@@ -235,7 +242,7 @@ const helpMePrintETH = ({ users, config }) => {
         { user: userToUpdate },
         { headers }
       );
-      setUser(data.user);
+      await setUserWithNFTCount(data.user);
       setOCWSuccess("Successfully set off chain wallet!");
       setTimeout(() => {
         setOCWSuccess(null);
@@ -247,11 +254,10 @@ const helpMePrintETH = ({ users, config }) => {
         setOCWError(null);
       }, 1500);
     }
-
   };
 
   const transferHP = async () => {
-    let transferAmountInt = Math.round(transferAmount)
+    let transferAmountInt = Math.round(transferAmount);
     if (transferAmount <= 0 || !transferToAddress) {
       setTransferError("Must have an amount > 0 and valid address");
       setTimeout(() => {
@@ -301,7 +307,7 @@ const helpMePrintETH = ({ users, config }) => {
         { transferPayload },
         { headers }
       );
-      setUser(data.user);
+      await setUserWithNFTCount(data.user);
       setTransferSuccess("Successfully transferred HPD!");
       setTimeout(() => {
         setTransferSuccess(null);
@@ -360,8 +366,7 @@ const helpMePrintETH = ({ users, config }) => {
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
-
-                {user ? (
+                {user && user?.nftCount > 0 ? (
                   <div className="w-full flex flex-col justify-center items-center gap-[1.5rem]">
                     <motion.button
                       type="button"
@@ -371,10 +376,9 @@ const helpMePrintETH = ({ users, config }) => {
                       className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
                       onClick={() => setShowWalletModal(true)}
                     >
-
                       Set Delegate Wallet
                     </motion.button>
-                    {user?.totalBalance - user?.bidAmount > 0 ? (
+                    {/* {user?.totalBalance - user?.bidAmount > 0 ? (
                       <motion.button
                         type="button"
                         aria-label="Trigger Transfer HP Wallet Modal"
@@ -387,11 +391,26 @@ const helpMePrintETH = ({ users, config }) => {
                       </motion.button>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                   </div>
                 ) : (
                   <></>
                 )}
+                {user && user?.totalBalance - user?.bidAmount > 0 ? (
+                  <motion.button
+                    type="button"
+                    aria-label="Trigger Transfer HP Wallet Modal"
+                    whileHover={{ scale: 1.06 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+                    onClick={() => setShowTransferModal(true)}
+                  >
+                    Transfer $HPD
+                  </motion.button>
+                ) : (
+                  <></>
+                )}
+
                 <div
                   className={`border border-1 border-slate-700 rounded flex ${
                     isConnected

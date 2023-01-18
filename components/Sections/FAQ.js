@@ -19,6 +19,15 @@ const FAQ = () => {
       answer:
         " The most engaged HMDT holders on Twitter/DC will be added to the engagement group. 2 deboggers from the engagement group will be selected holders for each Debog cycle. Current downtime for each selected holder: 1 Debog Cycle (meaning if you get selected in this group for this debog cycle, you cannot get selected for this group in the next debog cycle).",
     },
+    {
+      question: "What is this protocol?",
+      answer: `A mechanism that holders pay NOTHING, need NO gas-required operations on their end, and win ETH from an algorithmic-trading protocol (aka HMDT Algo-Bot). Initial deposit is funded by community vault. Loss (if any) is covered by community vault. ETH gained by the Algo-Bot is split as winnings for selected holders and community vault`,
+    },
+    {
+      question: "Has $HP emission started?",
+      answer:
+        "$HP accumulation started on Saturday, January 14th, 2023 in stealth mode",
+    },
   ];
 
   return (
@@ -44,8 +53,10 @@ const FAQ = () => {
               </motion.a>
             </p>
             <p>
-            There are three ways to get selected for HelpMePrintETH (all the selected holders will be determined prior to each Debog Cycle). 
-            Holders can use their $HP to bid on positions and/or enter into the raffle for the upcoming Debog cycle:
+              There are three ways to get selected for HelpMePrintETH (all the
+              selected holders will be determined prior to each Debog Cycle).
+              Holders can use their $HP to bid on positions and/or enter into
+              the raffle for the upcoming Debog cycle:
             </p>
           </div>
         </header>

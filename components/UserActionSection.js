@@ -27,12 +27,11 @@ const UserActionSection = ({ user, submitBid }) => {
 
   return (
     <>
-      {user ? (
+      {user && user?.nftCount > 0 ? (
         <div className="flex flex-col w-full lg:gap-[1.5rem]">
           <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
             Bidding
           </h2>
-
           <div className="flex flex-col-reverse lg:flex-row justify-between items-center ">
             <div className="font-vcr">
               <h6 className="mt-[1rem] lg:mt-0">
@@ -69,7 +68,7 @@ const UserActionSection = ({ user, submitBid }) => {
           <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
             No Account
           </h2>
-          <p className="font-vcr">
+          <p className="font-vcr my-[1rem]">
             The wallet you are using is not associated with a wallet holding a
             HMDT. Please try a different wallet or purchase a HMDT!
           </p>

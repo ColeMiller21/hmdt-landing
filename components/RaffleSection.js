@@ -15,7 +15,7 @@ const RaffleSection = ({
   useEffect(() => {}, [error, success]);
   return (
     <>
-      {user && isConnected ? (
+      {user && user.nftCount > 0 && isConnected ? (
         <div
           className={`border border-1 border-slate-700 rounded flex gap-[1rem] flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.75rem]`}
         >
