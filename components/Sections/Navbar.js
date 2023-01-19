@@ -2,9 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { socialLinks } from "../../utils/socialLinks";
 import { IconContext } from "react-icons";
+import { TbHeadphonesOff, TbHeadphones } from "react-icons/tb";
 import Link from "next/link";
 
-const Navbar = ({ toggleModal }) => {
+const Navbar = ({ toggleModal, toggleAudio, muted }) => {
   return (
     <nav className="min-w-screen min-h-[60px] flex justify-between items-center px-[1rem] md:px-[1.5rem] border-b-[1px] border-slate-700">
       <Link href="/">
@@ -18,6 +19,14 @@ const Navbar = ({ toggleModal }) => {
             className: "icons",
           }}
         >
+          <motion.li
+            onClick={toggleAudio}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="max-h-[1.5rem] max-w-[1.5rem] cursor-pointer"
+          >
+            {muted ? <TbHeadphonesOff /> : <TbHeadphones />}
+          </motion.li>
           {socialLinks.map((link, i) => {
             if (link.type === "social") {
               return (
