@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Footer from "./Sections/Footer";
 import Navbar from "./Sections/Navbar";
 import Modal from "./Modal";
@@ -6,20 +6,19 @@ import OSModalContent from "./OSModalContent";
 
 const Layout = ({ children }) => {
   const [showModal, setShowModal] = useState();
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
+  let audio = useRef();
 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
 
   const toggleAudio = () => {
+    muted ? audio.current.play() : audio.current.pause();
     setMuted(!muted);
   };
 
-  useEffect(() => {
-    let audio = document?.getElementById("audio");
-    audio.play();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="flex flex-col min-w-screen overflow-x-hidden min-full-page bg-[#141414] text-[#FAFAFA]">
@@ -34,12 +33,14 @@ const Layout = ({ children }) => {
         <OSModalContent />
       </Modal>
       <audio
+        ref={audio}
         className="invisible"
         id="audio"
         controls
         loop
         src="/loz.mp3"
         muted={muted}
+        autoPlay
       ></audio>
     </div>
   );
