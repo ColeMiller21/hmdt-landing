@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     let audio = document?.getElementById("audio");
-    audio?.play();
+    audio.play();
   }, []);
 
   return (
@@ -40,7 +40,6 @@ const Layout = ({ children }) => {
         loop
         src="/loz.mp3"
         muted={muted}
-        autoplay
       ></audio>
     </div>
   );

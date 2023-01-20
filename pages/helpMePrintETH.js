@@ -51,7 +51,7 @@ const helpMePrintETH = ({ users, config }) => {
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
   const provider = useProvider();
-  const [topBidders, setTopBidders] = useState(null);
+  const [topBidders, setTopBidders] = useState(users);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -331,44 +331,7 @@ const helpMePrintETH = ({ users, config }) => {
     setTransferToAddress(null);
   };
 
-  const getTimer = () => {
-    const currentTime = dayjs();
-    const currentDay = currentTime.day(); // gets the current day of the week (0-6)
-    const currentHour = currentTime.hour(); // gets the current hour (0-23)
-
-    let daysUntilThursday = 4 - currentDay; // 4 is Thursday
-    if (daysUntilThursday < 0) {
-      daysUntilThursday += 7;
-    }
-    let hoursUntilThursday = 21 - currentHour; // 21 is 9 PM
-    if (hoursUntilThursday < 0) {
-      hoursUntilThursday += 24;
-      daysUntilThursday--;
-    }
-
-    let nextThursday = currentTime
-      .add(daysUntilThursday, "day")
-      .set("hour", 21)
-      .set("minute", 0)
-      .set("second", 0);
-
-    const countdown = setInterval(() => {
-      const timeRemaining = nextThursday.diff(dayjs(), "millisecond");
-      if (timeRemaining < 0) {
-        clearInterval(countdown);
-        console.log("Thursday at 9 PM CST has arrived!");
-      } else {
-        console.log(
-          dayjs(timeRemaining).format(
-            "D [days] H [hours] m [minutes] s [seconds]"
-          )
-        );
-      }
-    }, 1000);
-  };
-
   useEffect(() => {
-    getTimer();
     if (isConnected) {
       setLoadingUser(true);
       (async () => {
