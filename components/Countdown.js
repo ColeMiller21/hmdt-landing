@@ -42,6 +42,7 @@ const Countdown = () => {
       remainingTime--;
       if (remainingTime < 0) {
         clearInterval(intervalId);
+        getTimer();
       }
     }, 1000);
   };
