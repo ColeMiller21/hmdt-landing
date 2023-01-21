@@ -22,13 +22,7 @@ import {
 } from "../utils/ethersHelper";
 import FAQ from "../components/Sections/FAQ";
 import ResponseMessage from "../components/ResponseMessage";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-// import localizedFormat from "daysjs/plugin/localizedFormat";
-// dayjs.extend(localizedFormat);
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import Countdown from "../components/Countdown";
 
 const headers = {
   secret: process.env.NEXT_PUBLIC_HMDT_API_KEY,
@@ -357,6 +351,7 @@ const helpMePrintETH = ({ users, config }) => {
             </h1>
           </div>
           <ResponsiveBannerImage />
+          <Countdown />
           <div className="flex-grow flex flex-col md:flex-row-reverse w-full md:my-[2.5rem]">
             {loadingUser ? (
               <div className="flex flex-col justify-center items-center w-full lg:min-h-full">
@@ -379,20 +374,6 @@ const helpMePrintETH = ({ users, config }) => {
                     >
                       Set Delegate Wallet
                     </motion.button>
-                    {/* {user?.totalBalance - user?.bidAmount > 0 ? (
-                      <motion.button
-                        type="button"
-                        aria-label="Trigger Transfer HP Wallet Modal"
-                        whileHover={{ scale: 1.06 }}
-                        whileTap={{ scale: 0.96 }}
-                        className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
-                        onClick={() => setShowTransferModal(true)}
-                      >
-                        Transfer $HPD
-                      </motion.button>
-                    ) : (
-                      <></>
-                    )} */}
                   </div>
                 ) : (
                   <></>
