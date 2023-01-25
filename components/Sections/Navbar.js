@@ -61,38 +61,38 @@ const Navbar = ({ toggleAudio, muted }) => {
               {navOpen ? <FaTimes /> : <GiHamburgerMenu />}
             </li>
           </ul>
+          {navOpen && (
+            <motion.div
+              key="answer"
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+                transition: {
+                  duration: 0.5,
+                },
+              }}
+              exit={{ opacity: 0, transition: { duration: 0.4 } }}
+              className="w-full flex font-vcr absolute top-[60px] bg-[#141414] above-all"
+            >
+              <ul className="flex flex-col divide-y divide-slate-700 w-full border-b border-slate-700">
+                {pageLinks.map((link, i) => {
+                  return (
+                    <Link href={link.href} key={`${link.title}-${i}`}>
+                      <motion.li
+                        className="font-vcr cursor-pointe hover:text-orange-400 py-[1rem] px-[.8rem]"
+                        onClick={toggleNav}
+                      >
+                        {link.title}{" "}
+                      </motion.li>
+                    </Link>
+                  );
+                })}
+              </ul>
+            </motion.div>
+          )}
         </nav>
-        {navOpen && (
-          <motion.div
-            key="answer"
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-              transition: {
-                duration: 0.5,
-              },
-            }}
-            exit={{ opacity: 0, transition: { duration: 0.4 } }}
-            className="w-full flex font-vcr absolute top-[60px] bg-[#141414] above-all"
-          >
-            <ul className="flex flex-col divide-y divide-slate-700 w-full border-b border-slate-700">
-              {pageLinks.map((link, i) => {
-                return (
-                  <Link href={link.href} key={`${link.title}-${i}`}>
-                    <motion.li
-                      className="font-vcr cursor-pointe hover:text-orange-400 py-[1rem] px-[.8rem]"
-                      onClick={toggleNav}
-                    >
-                      {link.title}{" "}
-                    </motion.li>
-                  </Link>
-                );
-              })}
-            </ul>
-          </motion.div>
-        )}
       </AnimatePresence>
     </IconContext.Provider>
   );
