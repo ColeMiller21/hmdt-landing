@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { motion } from "framer-motion";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponseMessage from "./ResponseMessage";
+import MainButton from "./MainButton";
 
-const UserActionSection = ({ user, submitBid }) => {
+const UserActionSection = ({ submitBid }) => {
+  let { user } = useContext(UserContext);
   const [bidAmount, setBidAmount] = useState(0);
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
@@ -25,8 +28,9 @@ const UserActionSection = ({ user, submitBid }) => {
     }, 2500);
   };
 
+  useEffect(() => {}, [user]);
   return (
-    <>
+    <div className="border border-1 border-slate-700 rounded flex flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]">
       {user && user?.nftCount > 0 ? (
         <div className="flex flex-col w-full lg:gap-[1.5rem]">
           <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
@@ -41,7 +45,7 @@ const UserActionSection = ({ user, submitBid }) => {
             </div>
             <ConnectButton showBalance={false} chainStatus="none" />
           </div>
-          <div className="flex flex-col items-center gap-[1rem] py-[1rem]">
+          <div className="flex flex-col items-center gap-[1rem] py-[1rem] ">
             <input
               type="number"
               placeholder="Place Bid"
@@ -49,17 +53,14 @@ const UserActionSection = ({ user, submitBid }) => {
               onChange={(e) => setBidAmount(e.target.value)}
               value={bidAmount}
             />
-            <motion.button
-              type="submit"
-              aria-label="Place Bid"
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.96 }}
-              className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[80%] text-center font-vcr"
+
+            <MainButton
               onClick={userSubmit}
-              disabled={!user}
+              ariaLabel="Place Bid"
+              width="w-[80%]"
             >
               Submit Bid
-            </motion.button>
+            </MainButton>
             <ResponseMessage error={errorText} success={successText} />
           </div>
         </div>
@@ -76,7 +77,7 @@ const UserActionSection = ({ user, submitBid }) => {
             href="https://opensea.io/collection/helpmedebugthis"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] text-center font-vcr"
+            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr hover:bg-slate-600"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -84,7 +85,7 @@ const UserActionSection = ({ user, submitBid }) => {
           </motion.a>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

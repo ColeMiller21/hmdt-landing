@@ -2,40 +2,13 @@ import React, { useEffect, useState } from "react";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const FAQ = () => {
-  const hiddenTexts = [
-    {
-      question: "🔥 (8 spots) Bidding:",
-      answer:
-        "Top8 bidders will be chosen in this cycle once the bid is concluded. Their balance will be reduced by a certain amount of $HP, where the exact amount is defined as the lowest bidding amount of $HP among these Top8 holders.",
-    },
-    {
-      question: "🔥 (6 spots) All-holder raffle:",
-      answer:
-        "All the holders will have the equal probability to get selected once their $HP exceeds the threshold (this threshold will be lower than HP median/mean over the entire holder distributing), in order to cover most of our holders. Threshold $HP will be deducted from the balance of raffle winners.",
-    },
-    {
-      question: "🔥 (2 spots) Engagement Group:",
-      answer:
-        " The most engaged HMDT holders on Twitter/DC will be added to the engagement group. 2 deboggers from the engagement group will be selected holders for each Debog cycle. Current downtime for each selected holder: 1 Debog Cycle (meaning if you get selected in this group for this debog cycle, you cannot get selected for this group in the next debog cycle).",
-    },
-    {
-      question: "What is this protocol?",
-      answer: `A mechanism that holders pay NOTHING, need NO gas-required operations on their end, and win ETH from an algorithmic-trading protocol (aka HMDT Algo-Bot). Initial deposit is funded by community vault. Loss (if any) is covered by community vault. ETH gained by the Algo-Bot is split as winnings for selected holders and community vault`,
-    },
-    {
-      question: "Has $HP emission started?",
-      answer:
-        "$HP accumulation started on Saturday, January 14th, 2023 in stealth mode",
-    },
-  ];
-
+const FAQ = ({ faqQuestions, title }) => {
   return (
     <section id="faqs" className="flex flex-col">
       <div className="flex flex-col items-center w-full my-[2rem] ">
         <header className="mb-[3rem] flex flex-col items-center justify-center">
-          <h2 className="font-pixel text-[4vw] md:text-[2vw] my-[1.75rem] text-center">
-            FAQs{" "}
+          <h2 className=" font-pixel text-[4.5vw] xl:text-[2.75vw] p-[1rem] text-orange-400 text-center leading-loose">
+            {title || "FAQs"}
           </h2>
           <div className="text-[.9rem] md:text-[1rem] font-vcr text-white text-center w-[85%] md:w-[60%]">
             <p className="my-[1rem]">
@@ -61,7 +34,7 @@ const FAQ = () => {
           </div>
         </header>
         <div className="flex justify-center w-full">
-          <Accordion faqQuestions={hiddenTexts} />
+          <Accordion faqQuestions={faqQuestions} />
         </div>
       </div>
     </section>
@@ -73,7 +46,7 @@ export default FAQ;
 const Accordion = ({ faqQuestions }) => {
   return (
     <div className={` w-full flex flex-col items-center`}>
-      {faqQuestions.map((question, i) => (
+      {faqQuestions?.map((question, i) => (
         <AccordionItemMotion
           key={`${question}-${i}`}
           question={question.question}
@@ -101,7 +74,7 @@ const AccordionItemMotion = ({ question, answer, idx, questionsLength }) => {
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex py-[1rem] text-[.9rem] md:text-[1rem] font-vcr text-white"
         >
-          <span className="w-[10%]  mr-[5px]">{idx + 1}</span>
+          <span className="w-[10%]  mr-[5px] text-orange-400">{idx + 1}</span>
           <span className="w-full">{question}</span>
           <span className="w-[5%] ml-[5px] cursor-pointer flex my-auto h-full">
             {isOpen ? <FaMinus /> : <FaPlus />}

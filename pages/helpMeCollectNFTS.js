@@ -15,7 +15,7 @@ import PageTitle from "../components/PageTitle";
 import NotConnected from "../components/NotConnected";
 import { UserContext } from "../context/UserContext";
 import Loader from "../components/Loader";
-import { hmpeQuestions } from "../data/faq/hmpeFAQ";
+import { hmpeQuestions } from "../data/faq/hmcnFAQ";
 import { validateBidAmount } from "../utils/bidHelper.js";
 import EnrollModal from "../components/EnrollModal";
 import UnenrollModal from "../components/UnenrollModal";
@@ -37,7 +37,7 @@ export async function getStaticProps(ctx) {
   };
 }
 
-const helpMePrintETH = ({ users, config }) => {
+const helpMeCollectNFTS = ({ users, config }) => {
   const { user, updateUser, loadingUser } = useContext(UserContext);
   const { address, isConnected } = useAccount();
   const [topBidders, setTopBidders] = useState(users);
@@ -55,6 +55,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const submitBid = async (bidAmount) => {
+    return;
     bidAmount = Math.round(bidAmount);
     let { success, message } = validateBidAmount(bidAmount, user);
     if (!success) {
@@ -77,6 +78,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const triggerModal = async () => {
+    return;
     if (user?.totalBalance < config?.raffleThreshold) {
       setEnrollError("You do not have enough $HP to enroll this cycle");
       setTimeout(() => {
@@ -107,6 +109,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const enrollUser = async () => {
+    return;
     let userToUpdate = {
       ...user,
       enrolled: true,
@@ -138,6 +141,7 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const unenrollUser = async () => {
+    return;
     let newTotalBalance = user?.totalBalance + config?.raffleThreshold;
     if (typeof newTotalBalance !== "number") {
       return;
@@ -182,13 +186,13 @@ const helpMePrintETH = ({ users, config }) => {
   return (
     <>
       <SEO
-        title="Help Me Print ETH"
+        title="Help Me Collect NFTS"
         description="A mechanism that holders pay NOTHING, need NO gas-required operations on their end, and get ETH winnings from an algorithmic-trading protocol (aka HMDT Algo-Bot)"
-        path="/helpMePrintETH"
+        path="/helpMeCollectNFTS"
       />
       <section className="flex min-h-full w-full">
         <div className="flex flex-col w-full p-[1rem] gap-[2rem] px-[1rem]">
-          <PageTitle text="Help Me Print ETH" />
+          <PageTitle text="Help Me Collect NFTS" />
           <ResponsiveBannerImage />
           <Countdown />
           <div className="flex-grow flex flex-col md:flex-row-reverse w-full md:my-[2.5rem]">
@@ -214,7 +218,7 @@ const helpMePrintETH = ({ users, config }) => {
               <TopBidTable users={topBidders} />
             </div>
           </div>
-          <FAQ faqQuestions={hmpeQuestions} title="Help Me Print ETH FAQs" />
+          <FAQ faqQuestions={hmpeQuestions} />
         </div>
         <UnenrollModal
           onClose={() => setShowUnenrollModal(false)}
@@ -237,4 +241,4 @@ const helpMePrintETH = ({ users, config }) => {
   );
 };
 
-export default helpMePrintETH;
+export default helpMeCollectNFTS;

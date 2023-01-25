@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const ResponsiveBannerImage = () => {
   return (
-    <div className="relative w-full h-64 bg-gray-300 overflow-hidden rounded-lg">
+    <div className="relative w-full h-64 bg-gray-300 overflow-hidden rounded-lg z-10">
       <Image
         src="/hmdtbanner.jpeg"
         alt="Banner"

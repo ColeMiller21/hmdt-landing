@@ -26,13 +26,11 @@ export default async function handler(req, res) {
 }
 
 const enrollUser = async (user) => {
-  try {
-    const filter = {
-      $or: [{ address: user?.address }],
-    };
-    let result = await User.findOneAndUpdate(filter, user, { new: true });
-    return result;
-  } catch (err) {
-    throw new Error(err);
-  }
+  const filter = {
+    $or: [{ address: user?.address }],
+  };
+  let result = await User.findOneAndUpdate(filter, user, {
+    new: true,
+  });
+  return result;
 };

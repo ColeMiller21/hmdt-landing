@@ -4,12 +4,15 @@ import { createImageUrl } from "../../utils/imageHelper";
 import { FaSearch } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import OSModal from "../OSModal";
+import MainButton from "../MainButton";
 
 const gifPath = "/welcome.gif";
 
 const Landing = () => {
   const [searchedTokenUrl, setSearchedTokenUrl] = useState(null);
   const [searchedTokenId, setSearchedTokenId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [tokenId, setTokenId] = useState("");
   const [errorText, setErrorText] = useState("");
 
@@ -36,23 +39,53 @@ const Landing = () => {
     }
   };
 
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   return (
-    <section className="flex min-h-full w-screen justify-center">
+    <section className="flex min-h-full w-screen justify-center border-slate-700">
       <div className="flex flex-col items-center justify-center h-full p-[2rem]">
         <div className="object-contain">
           <h1 className=" font-pixel typewriter text-[4.5vw] xl:text-[2.75vw] text-center p-[1rem]">
             Help Me Debug This
           </h1>
         </div>
+        <p className="font-vcr text-center mt-[1rem]">A simple tag line </p>
         <div className="w-[80%] md:w-[60%] lg:w-[50%] xl:w-[40%] aspect-square relative my-[2rem]">
-          <Image
-            style={{ objectFit: "contain" }}
+          <img
             src={searchedTokenId ? searchedTokenUrl : gifPath}
-            alt={tokenId ? `Help Me Debug This NFT #${tokenId}` : "HMDT Gif"}
-            unoptimized={true}
-            fill
-            priority={true}
+            alt={`${
+              searchedTokenId ? `HMDT #${searchedTokenId}` : "Welcome Gif"
+            }`}
+            className="w-full min-h-full"
           />
+          <div class="glitch__layers">
+            <div
+              className="glitch__layer"
+              style={{
+                backgroundImage: `url(${
+                  searchedTokenId ? searchedTokenUrl : gifPath
+                })`,
+              }}
+            ></div>
+            <div
+              className="glitch__layer"
+              style={{
+                backgroundImage: `url(${
+                  searchedTokenId ? searchedTokenUrl : gifPath
+                })`,
+              }}
+            ></div>
+            <div
+              className="glitch__layer"
+              style={{
+                backgroundImage: `url(${
+                  searchedTokenId ? searchedTokenUrl : gifPath
+                })`,
+              }}
+            ></div>
+          </div>
         </div>
         {searchedTokenId ? (
           <a
@@ -93,16 +126,11 @@ const Landing = () => {
             </button>
           </label>
         </div>
-
-        <Link
-          href="/helpMePrintETH"
-          className="px-[1.5rem] py-[.75rem] bg-slate-700 hover:bg-slate-600 text-white w-[250px] md:w-[400px] text-center font-vcr cursor-pointer"
-        >
-          <motion.span whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.96 }}>
-            <span className="w-full h-full">Help Me Print ETH</span>
-          </motion.span>
-        </Link>
+        <MainButton onClick={toggleModal} width="w-[250px] md:w-[400px]">
+          Check out Collections
+        </MainButton>
       </div>
+      <OSModal onClose={() => setShowModal(false)} show={showModal} />
     </section>
   );
 };

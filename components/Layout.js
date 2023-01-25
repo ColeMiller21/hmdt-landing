@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Footer from "./Sections/Footer";
 import Navbar from "./Sections/Navbar";
 import Modal from "./Modal";
-import OSModalContent from "./OSModalContent";
+import OSModal from "./OSModal";
 
 const Layout = ({ children }) => {
   const [showModal, setShowModal] = useState();
@@ -21,20 +21,14 @@ const Layout = ({ children }) => {
   useEffect(() => {}, []);
 
   return (
-    <div className="flex flex-col min-w-screen overflow-x-hidden min-full-page bg-[#141414] text-[#FAFAFA]">
-      <Navbar
-        toggleModal={toggleModal}
-        toggleAudio={toggleAudio}
-        muted={muted}
-      />
-      <main className="flex-grow flex">{children}</main>
-      <Footer />
-      <Modal onClose={() => setShowModal(false)} show={showModal}>
-        <OSModalContent />
-      </Modal>
+    <div className="flex flex-col min-w-screen overflow-x-hidden bg-[#141414] text-[#FAFAFA] min-full-page">
+      <Navbar toggleAudio={toggleAudio} muted={muted} />
+      <main className="flex-grow flex flex-col">{children}</main>
+      <Footer toggleModal={toggleModal} />
+      <OSModal onClose={() => setShowModal(false)} show={showModal} />
       <audio
         ref={audio}
-        className="invisible"
+        className="hidden"
         id="audio"
         controls
         loop

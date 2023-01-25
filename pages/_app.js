@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import { RainbowKitProvider, midnightTheme } from "@rainbow-me/rainbowkit";
 import { chain, WagmiConfig } from "wagmi";
 import { chains, wagmiClient } from "../utils/walletHelper";
+import { UserProvider } from "../context/UserContext";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -35,9 +36,11 @@ export default function App({ Component, pageProps }) {
             initialChain={chain.mainnet}
             theme={midnightTheme()}
           >
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <UserProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </UserProvider>
           </RainbowKitProvider>
         </WagmiConfig>
       </>

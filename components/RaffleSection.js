@@ -2,15 +2,18 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 import ResponseMessage from "./ResponseMessage";
+import MainButton from "./MainButton";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const RaffleSection = ({
-  user,
   enrollUser,
   unenrollUser,
   raffleThreshold,
   error,
   success,
 }) => {
+  let { user } = useContext(UserContext);
   const { address, isConnected } = useAccount();
   useEffect(() => {}, [error, success]);
   return (
@@ -38,28 +41,23 @@ const RaffleSection = ({
                 >
                   You Are Enrolled!
                 </button>
-                <motion.button
-                  type="button"
-                  aria-label="Connect Wallet Button"
-                  whileHover={{ scale: 1.06 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[80%] text-center font-vcr"
+
+                <MainButton
                   onClick={() => unenrollUser()}
+                  ariaLabel="Unenroll Button"
+                  width="w-[80%]"
                 >
                   Unenroll Now
-                </motion.button>
+                </MainButton>
               </>
             ) : (
-              <motion.button
-                type="button"
-                aria-label="Connect Wallet Button"
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.96 }}
-                className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[80%] text-center font-vcr"
+              <MainButton
                 onClick={async () => await enrollUser()}
+                ariaLabel="Connect Wallet Button"
+                width="w-[80%]"
               >
                 Enroll Now
-              </motion.button>
+              </MainButton>
             )}
           </div>
           <ResponseMessage error={error} success={success} />
