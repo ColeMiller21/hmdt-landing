@@ -190,7 +190,7 @@ const helpMeCollectNFTS = ({ users, config }) => {
         description="A mechanism that holders pay NOTHING, need NO gas-required operations on their end, and get ETH winnings from an algorithmic-trading protocol (aka HMDT Algo-Bot)"
         path="/helpMeCollectNFTS"
       />
-      <section className="flex min-h-full w-full">
+      <section className="flex min-h-full w-full mt-[70px]">
         <div className="flex flex-col w-full p-[1rem] gap-[2rem] px-[1rem]">
           <PageTitle text="Help Me Collect NFTS" />
           <ResponsiveBannerImage />

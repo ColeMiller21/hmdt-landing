@@ -4,7 +4,7 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 
 const FAQ = ({ faqQuestions, title }) => {
   return (
-    <section id="faqs" className="flex flex-col">
+    <section id="faqs" className="flex flex-col mt-[2.5rem]">
       <div className="flex flex-col items-center w-full my-[2rem] ">
         <header className="mb-[3rem] flex flex-col items-center justify-center">
           <h2 className=" font-pixel text-[4.5vw] xl:text-[2.75vw] p-[1rem] text-orange-400 text-center leading-loose">
