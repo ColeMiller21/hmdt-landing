@@ -18,11 +18,6 @@ const About = () => {
         dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
         proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </p>
-
-      <div className="flex flex-col w-[90%] md:flex-row justify-center items-center gap-[1rem] md:w-[50%]">
-        <MainButton>Join Discord</MainButton>
-        <MainButton>Join Twitter</MainButton>
-      </div>
     </section>
   );
 };

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const PageSelection = () => {
   return (
-    <section className="flex flex-col items-center pt-[5rem] font-vcr w-full">
+    <section className="flex flex-col items-center font-vcr w-full">
       <div className="flex flex-col md:flex-row gap-[2.5rem] items-center">
         <div className="w-full flex justify-center items-center p-[1rem]">
           <motion.div

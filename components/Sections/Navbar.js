@@ -23,7 +23,7 @@ const Navbar = ({ toggleAudio, muted }) => {
       }}
     >
       <AnimatePresence>
-        <nav className="min-w-screen min-h-[60px] flex justify-between items-center px-[1rem] md:px-[1.5rem] border-b-[1px] border-slate-700">
+        <nav className="fixed top-0 left-0 above-all min-w-[100vw] bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-60 min-h-[60px] flex justify-between items-center px-[1rem] md:px-[1.5rem] border-b-[1px] border-slate-700">
           <Link href="/">
             <h3 className="font-pixel text-[#FAFAFA] cursor-pointer hover:text-orange-400">
               HMDT

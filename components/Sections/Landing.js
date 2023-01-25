@@ -44,7 +44,7 @@ const Landing = () => {
   };
 
   return (
-    <section className="flex min-h-full w-screen justify-center border-slate-700">
+    <section className="flex min-full-page w-screen justify-center items-center border-slate-700">
       <div className="flex flex-col items-center justify-center h-full p-[2rem]">
         <div className="object-contain">
           <h1 className=" font-pixel typewriter text-[4.5vw] xl:text-[2.75vw] text-center p-[1rem]">
