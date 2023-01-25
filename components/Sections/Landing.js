@@ -60,7 +60,7 @@ const Landing = () => {
             }`}
             className="w-full min-h-full"
           />
-          <div class="glitch__layers">
+          <div className="glitch__layers">
             <div
               className="glitch__layer"
               style={{
