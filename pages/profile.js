@@ -20,7 +20,7 @@ const profile = () => {
   const user = useContext(UserContext);
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-[70px]">
       {isConnected ? (
         <UserDashboard />
       ) : (

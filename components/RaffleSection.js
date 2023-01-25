@@ -26,7 +26,8 @@ const RaffleSection = ({
             Raffle
           </h2>
           <p className="text-center font-vcr">
-            Current raffle threshold: {raffleThreshold}
+            Current raffle threshold:{" "}
+            <span className="text-orange-400">{raffleThreshold}</span>
           </p>
           <p className="text-center font-vcr">
             Click the button below to ensure you are enrolled in the upcoming

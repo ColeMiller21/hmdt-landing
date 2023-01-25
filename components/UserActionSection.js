@@ -39,9 +39,17 @@ const UserActionSection = ({ submitBid }) => {
           <div className="flex flex-col-reverse lg:flex-row justify-between items-center ">
             <div className="font-vcr">
               <h6 className="mt-[1rem] lg:mt-0">
-                Balance of $HP: {user?.totalBalance || 0}
+                Balance of $HP:{" "}
+                <span className="text-orange-500">
+                  {user?.totalBalance || 0}
+                </span>
               </h6>
-              <h6>Current Bid: {user?.bidAmount || "N/A"}</h6>
+              <h6>
+                Current Bid:{" "}
+                <span className="text-orange-500">
+                  {user?.bidAmount || "N/A"}
+                </span>{" "}
+              </h6>
             </div>
             <ConnectButton showBalance={false} chainStatus="none" />
           </div>
