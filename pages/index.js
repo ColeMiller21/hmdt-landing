@@ -14,8 +14,8 @@ export default function Home() {
       />
       <div className="w-full flex flex-col ">
         <Landing />
-        <PageSelection />
         <About />
+        <PageSelection />
         <FAQ faqQuestions={hmpeQuestions} title="General FAQs" />
       </div>
     </>
