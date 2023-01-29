@@ -73,6 +73,18 @@ a:hover {
   max-width: fit-content;
 }
 
+.cursor-non {
+  cursor: not-allowed !important;
+}
+
+.swiper-button-prev {
+  color: #ffffff !important;
+}
+
+.swiper-button-next {
+  color: #ffffff !important;
+}
+
 /* The typing effect */
 @keyframes typing {
   from {

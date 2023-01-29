@@ -64,7 +64,7 @@ const AccordionItemMotion = ({ question, answer, idx, questionsLength }) => {
 
   return (
     <motion.div
-      className={` w-[90%] md:w-[70%] border-t border-white ${
+      className={` w-[90%] md:w-[70%] border-t border-slate-700 ${
         idx == questionsLength - 1 ? "border-b" : ""
       } py-[1rem]`}
     >

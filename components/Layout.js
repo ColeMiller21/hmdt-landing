@@ -3,6 +3,7 @@ import Footer from "./Sections/Footer";
 import Navbar from "./Sections/Navbar";
 import Modal from "./Modal";
 import OSModal from "./OSModal";
+import ScrollToTopButton from "./ScrollToTopButton";
 
 const Layout = ({ children }) => {
   const [showModal, setShowModal] = useState();
@@ -36,6 +37,7 @@ const Layout = ({ children }) => {
         muted={muted}
         autoPlay
       ></audio>
+      <ScrollToTopButton />
     </div>
   );
 };

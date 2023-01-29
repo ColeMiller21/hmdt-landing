@@ -6,14 +6,12 @@ import PageTitle from "../components/PageTitle";
 import ModalComponent from "../components/Modal";
 import ResponseMessage from "../components/ResponseMessage";
 import NotConnected from "../components/NotConnected";
-import { motion } from "framer-motion";
-import {
-  formatAddress,
-  ALCHEMY_PROVIDER,
-  reverseResolveAddress,
-  isValidAddress,
-} from "../utils/ethersHelper";
+import { motion, AnimatePresence } from "framer-motion";
+import { formatAddress, isValidAddress } from "../utils/ethersHelper";
 import MainButton from "../components/MainButton";
+import { IconContext } from "react-icons";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import Slider from "../components/Slider";
 
 const profile = () => {
   const { address, isConnected } = useAccount();
@@ -168,7 +166,7 @@ const BalanceSection = () => {
                     {user?.enrolled ? "Enrolled" : "Not Enrolled"}
                   </td>
                 </tr>
-                <tr className="">
+                {/* <tr className="">
                   <td className=" px-4 py-2 text-left">HelpMeCollectNFTs</td>
                   <td className=" px-4 py-2 text-orange-400">
                     {user?.bidAmountNFT}
@@ -176,7 +174,7 @@ const BalanceSection = () => {
                   <td className=" px-4 py-2 text-orange-400">
                     {user?.enrolledNFT ? "Enrolled" : "Not Enrolled"}
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </table>
           </div>
@@ -291,7 +289,13 @@ const ProfileSection = () => {
               {user?.nftCount > 0 ? "ACTIVE" : "INACTIVE"}
             </span>
           </h6>
-          <div className="flex flex-col gap-[.5rem] my-[1.5rem] flex-grow justify-center">
+          <div className="flex flex-col gap-[.8rem] my-[1.5rem] flex-grow justify-center">
+            <span className="flex justify-between items-center">
+              <label className="mr-[5px]">Connected Address: </label>
+              <span className="hidden xl:block text-orange-400">
+                <ConnectButton showBalance={false} chainStatus="none" />
+              </span>
+            </span>
             <span className="flex justify-between">
               <label className="mr-[5px]">Address: </label>
               <span className="xl:hidden text-orange-400">
@@ -365,6 +369,59 @@ const ProfileSection = () => {
         </div>
       </ModalComponent>
     </>
+  );
+};
+
+const NFTViewSection = ({ title }) => {
+  const [viewOpen, setViewOpen] = useState(false);
+
+  const toggleView = () => {
+    setViewOpen(!viewOpen);
+  };
+  return (
+    <AnimatePresence>
+      <IconContext.Provider
+        value={{
+          color: "#FAFAFA",
+          size: "1.5rem",
+          className: " hover:text-orange-500",
+        }}
+      >
+        <div className="w-full flex flex-col p-[2rem] font-vcr  border-1 border-slate-700 rounded">
+          <div className="flex justify-between items-center">
+            <h3 className="font-vcr text-[1.2rem] md:text-[2rem]">
+              <span className="text-orange-400">My </span>
+              {title}
+            </h3>
+            <span
+              aria-label="Dropdown Button"
+              onClick={toggleView}
+              className="cursor-pointer"
+            >
+              {viewOpen ? <FaChevronDown /> : <FaChevronUp />}
+            </span>
+          </div>
+          {viewOpen && (
+            <motion.div
+              key="answer"
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+                transition: {
+                  duration: 0.5,
+                },
+              }}
+              exit={{ opacity: 0, transition: { duration: 0.4 } }}
+              className="w-full py-[1.5rem]"
+            >
+              <Slider type="hmdt" />
+            </motion.div>
+          )}
+        </div>
+      </IconContext.Provider>
+    </AnimatePresence>
   );
 };
 

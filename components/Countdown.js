@@ -57,7 +57,7 @@ const Countdown = () => {
       </h2>
 
       <div className="flex justify-center gap-[.8rem] font-vcr min-h-[80px]">
-        {daysLeft && (
+        {secLeft && (
           <>
             <div className="flex flex-col items-center gap-[.5rem]">
               <h2 className="text-[2rem] lg:text-[2.5rem]">{daysLeft}</h2>

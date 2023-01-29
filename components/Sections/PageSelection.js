@@ -24,18 +24,19 @@ const PageSelection = () => {
         </div>
         <div className="w-full flex justify-center items-center">
           <motion.div
-            className="relative group"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+            className="relative group "
+            // whileHover={{ scale: 1.03 }}
+            // whileTap={{ scale: 0.97 }}
           >
             <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-400 to-purple-500 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-            <Link href="/helpMeCollectNFTS">
-              <button className="relative  w-[250px] h-[80px] bg-black rounded-lg leading-none flex items-center justify-center">
-                <span className="flex items-center justify-center">
-                  <span className="">HelpMeCollectNFTS</span>
-                </span>
-              </button>
-            </Link>
+            {/* <Link href="/helpMeCollectNFTS"> */}
+            <button className="relative  w-[250px] h-[80px] bg-black rounded-lg leading-none flex items-center justify-center cursor-non">
+              <span className="flex flex-col items-center justify-center ">
+                <span className="">HelpMeCollectNFTS</span>
+                <span className="mt-[5px] text-orange-400">Coming Soon</span>
+              </span>
+            </button>
+            {/* </Link> */}
           </motion.div>
         </div>
       </div>

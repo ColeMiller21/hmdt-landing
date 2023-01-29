@@ -18,7 +18,7 @@ export const reverseResolveAddress = async (provider, address) => {
 
 export const formatAddress = (address) => {
   if (!address || address?.includes(".eth")) return;
-  return `${address.substring(0, 5)}....${address.substring(36, 42)}`;
+  return `${address.substring(0, 3)}....${address.substring(36, 42)}`;
 };
 
 export const isValidAddress = (address) => {
@@ -29,7 +29,6 @@ export const ALCHEMY_PROVIDER = new ethers.providers.AlchemyProvider(
   "mainnet",
   process.env.NEXT_PUBLIC_ALCHEMY_ID
 );
-
 
 export const GOERLI_PROVIDER = new ethers.providers.AlchemyProvider(
   "goerli",

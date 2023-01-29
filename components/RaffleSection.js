@@ -5,6 +5,9 @@ import ResponseMessage from "./ResponseMessage";
 import MainButton from "./MainButton";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { IconContext } from "react-icons";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { Link as ScrollLink } from "react-scroll";
 
 const RaffleSection = ({
   enrollUser,
@@ -20,10 +23,30 @@ const RaffleSection = ({
     <>
       {user && user.nftCount > 0 && isConnected ? (
         <div
-          className={`border border-1 border-slate-700 rounded flex gap-[1rem] flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.75rem]`}
+          className={`border-1 border-slate-700 rounded flex gap-[1rem] flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.75rem]`}
         >
-          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem]">
+          <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem] flex justify-center items-center">
             Raffle
+            <span className="ml-[3px] cursor-pointer">
+              <ScrollLink
+                activeClass="active"
+                to="faqs"
+                spy={true}
+                smooth={true}
+                offset={0}
+                duration={300}
+              >
+                <IconContext.Provider
+                  value={{
+                    color: "#fb923c",
+                    size: "2rem",
+                    className: "",
+                  }}
+                >
+                  <IoInformationCircleOutline />
+                </IconContext.Provider>
+              </ScrollLink>
+            </span>
           </h2>
           <p className="text-center font-vcr">
             Current raffle threshold:{" "}

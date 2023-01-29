@@ -27,7 +27,7 @@ const TopBidTable = ({ users }) => {
   return (
     <div className="flex flex-col gap-[2rem] items-center w-full my-[2rem]">
       <div
-        className={`border border-1 border-slate-700 rounded flex flex-col w-[90%]  px-[1.5rem] h-[70%] overflow-auto`}
+        className={`border-1 border-slate-700 rounded flex flex-col w-[90%]  px-[1.5rem] h-[70%] overflow-auto`}
       >
         <Bids bids={users} loading={loading} />
       </div>
