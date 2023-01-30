@@ -15,22 +15,33 @@ const headers = {
 // Get the user or create if the address doesnt exist and the user holds HMDT count > 0
 const getUser = async (addr) => {
   let { data } = await axios.get(`/api/user?address=${addr}`, { headers });
+  console.log("GETTING USER FROM DB: ", data);
   let nftCount = await getUserNFTCount(data.user?.address);
-  data.user.displayAddress = await getDisplayName(data.user?.address);
-  if (data.user && nftCount > 0) {
-    return { ...data.user, nftCount };
-  } else if (!data.user && nftCount > 0) {
-    //create user
-    console.log("need to create user");
-    let { data } = await axios.post(
-      "/api/user",
-      { user: { address: addr } },
-      { headers }
-    );
-    return data.user;
+  if (!data.user) {
+    let nullUserNftCount = await getUserNFTCount(addr);
+    if (nullUserNftCount > 0) {
+      let { data } = await axios.post(
+        "/api/user",
+        { user: { address: addr } },
+        { headers }
+      );
+      let nftCount = nullUserNftCount;
+      data.user.displayAddress = await getDisplayName(data.user?.address);
+      return { ...data.user, nftCount };
+    }
+    return null;
   }
-  // no user and nftCount === 0
-  return null;
+  data.user.displayAddress = await getDisplayName(data.user?.address);
+  return { ...data.user, nftCount };
+};
+
+const transferHPFromUser = async (transferPayload) => {
+  let { data } = await axios.post(
+    "/api/transfer",
+    { transferPayload },
+    { headers }
+  );
+  return data;
 };
 
 const getTopBidders = async () => {
@@ -51,4 +62,4 @@ const getUserNFTCount = async (address) => {
   return nftCount;
 };
 
-export { getUser, getUserNFTCount, getDisplayName };
+export { getUser, getUserNFTCount, getDisplayName, transferHPFromUser };

@@ -22,6 +22,7 @@ export function UserProvider({ children }) {
       try {
         setLoadingUser(true);
         let user = await getUser(address);
+        console.log("USER FROM DB", user);
         setUser(user);
         setLoadingUser(false);
         sessionStorage.setItem("user", JSON.stringify(user));

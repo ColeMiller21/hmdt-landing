@@ -57,7 +57,7 @@ const Bids = ({ bids, loading }) => {
           >
             {!loading ? (
               <>
-                <span>
+                <span className="mr-[3px]">
                   <strong>{bid.bidAmount}</strong>
                 </span>
                 <span className="xl:hidden">

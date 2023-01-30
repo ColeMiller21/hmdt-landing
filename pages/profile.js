@@ -12,10 +12,11 @@ import MainButton from "../components/MainButton";
 import { IconContext } from "react-icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Slider from "../components/Slider";
+import NoAccount from "../components/NoAccount";
+import { transferHPFromUser } from "../utils/dbHelper";
 
 const profile = () => {
-  const { address, isConnected } = useAccount();
-  const user = useContext(UserContext);
+  const { isConnected } = useAccount();
 
   return (
     <div className="w-full mt-[70px]">
@@ -33,13 +34,20 @@ const profile = () => {
 };
 
 const UserDashboard = () => {
+  const { user } = useContext(UserContext);
   return (
     <div className="h-full min-w-screen items-center flex flex-col gap-[1.5rem] p-[2rem]">
       <PageTitle text="Help Me Profile" />
-      <div className="flex flex-col items-center lg:items-stretch lg:flex-row gap-[1.5rem] lg:gap-[1rem] w-full">
-        <ProfileSection />
-        <BalanceSection />
-      </div>
+      {user ? (
+        <div className="flex flex-col items-center lg:items-stretch lg:flex-row gap-[1.5rem] lg:gap-[1rem] w-full">
+          <ProfileSection />
+          <BalanceSection />
+        </div>
+      ) : (
+        <div className="border-1 border-slate-700 rounded flex flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]">
+          <NoAccount />
+        </div>
+      )}
     </div>
   );
 };
@@ -97,20 +105,15 @@ const BalanceSection = () => {
     }
     let userToUpdate = {
       ...user,
-      totalBalance: user?.totalBalance - transferAmount,
+      totalBalance: user?.totalBalance - transferAmountInt,
     };
     let transferPayload = {
       user: userToUpdate,
       transferAmount,
       transferToAddress: transferToAddress.trim(),
     };
-
     try {
-      let { data } = await axios.post(
-        "/api/transfer",
-        { transferPayload },
-        { headers }
-      );
+      let data = await transferHPFromUser(transferPayload);
       await updateUser(data.user);
       setTransferSuccess("Successfully transferred HPD!");
       setTimeout(() => {
@@ -120,6 +123,7 @@ const BalanceSection = () => {
         setShowTransferModal(false);
       }, 2500);
     } catch (err) {
+      console.log(err);
       setTransferError(
         "500 Error: Ensure transfer to address that is a registered holder of HMDT"
       );
