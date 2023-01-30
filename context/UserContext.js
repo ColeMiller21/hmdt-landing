@@ -22,7 +22,6 @@ export function UserProvider({ children }) {
       try {
         setLoadingUser(true);
         let user = await getUser(address);
-        console.log("USER FROM DB", user);
         setUser(user);
         setLoadingUser(false);
         sessionStorage.setItem("user", JSON.stringify(user));
@@ -35,7 +34,6 @@ export function UserProvider({ children }) {
   }, [isConnected, address]);
 
   const updateUser = async (payload) => {
-    console.log(payload);
     try {
       setLoadingUser(true);
       //update the current user

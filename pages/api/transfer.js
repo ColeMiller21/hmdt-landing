@@ -5,8 +5,6 @@ export default async function handler(req, res) {
   const method = req.method;
   const { secret } = req.headers;
   const { transferPayload } = req.body;
-  console.log(req.body);
-  console.log(transferPayload);
 
   if (!secret || secret !== process.env.HMDT_API_KEY) {
     return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });

@@ -15,7 +15,6 @@ const headers = {
 // Get the user or create if the address doesnt exist and the user holds HMDT count > 0
 const getUser = async (addr) => {
   let { data } = await axios.get(`/api/user?address=${addr}`, { headers });
-  console.log("GETTING USER FROM DB: ", data);
   let nftCount = await getUserNFTCount(data.user?.address);
   if (!data.user) {
     let nullUserNftCount = await getUserNFTCount(addr);
