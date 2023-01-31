@@ -37,15 +37,11 @@ export function UserProvider({ children }) {
     try {
       setLoadingUser(true);
       //update the current user
-      let { data } = await axios.put(
-        "/api/user",
-        { user: payload },
-        { headers }
-      );
+      let { data } = await axios.put("/api/user", payload, { headers });
       let newUser = {
         ...data.user,
         nftCount: await getUserNFTCount(data.user?.address),
-        displayName: await getDisplayName(data.user?.address),
+        displayAddress: await getDisplayName(data.user?.address),
       };
       setUser(newUser);
       setLoadingUser(false);

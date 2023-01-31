@@ -60,14 +60,15 @@ const helpMePrintETH = ({ users, config }) => {
     if (!success) {
       return { success, message };
     }
-    let payload = { ...user, bidAmount };
+    let userToUpdate = { ...user, bidAmount };
     try {
       let { data } = await axios.put(
         `/api/user`,
-        { user: payload },
+        { user: userToUpdate },
         { headers }
       );
-      await updateUser(data.user);
+      console.log(data);
+      await updateUser({ user: data.user });
       await updateTopBidders();
       return { success: true, message: "Bid Submitted Successfully" };
     } catch (err) {
@@ -121,7 +122,7 @@ const helpMePrintETH = ({ users, config }) => {
         { user: userToUpdate },
         { headers }
       );
-      await updateUser(data.user);
+      await updateUser({ user: data.user });
       await updateTopBidders();
       setEnrollSuccess("Successfully enrolled!");
       setTimeout(() => {
@@ -154,7 +155,7 @@ const helpMePrintETH = ({ users, config }) => {
         { user: userToUpdate },
         { headers }
       );
-      await updateUser(data.user);
+      await updateUser({ user: data.user });
       await updateTopBidders();
       setEnrollSuccess("Successfully unenrolled!");
       setTimeout(() => {

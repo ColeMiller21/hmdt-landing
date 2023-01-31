@@ -114,7 +114,7 @@ const BalanceSection = () => {
     };
     try {
       let data = await transferHPFromUser(transferPayload);
-      await updateUser(data.user);
+      await updateUser({ user: data.user });
       setTransferSuccess("Successfully transferred HPD!");
       setTimeout(() => {
         setTransferSuccess(null);
@@ -262,8 +262,7 @@ const ProfileSection = () => {
       return;
     }
     try {
-      let res = await updateUser({ user: userToUpdate });
-      console.log("RESULT:", res);
+      await updateUser({ user: userToUpdate });
       setOCWSuccess("Successfully set off chain wallet!");
       setTimeout(() => {
         setOCWSuccess(null);
