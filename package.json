@@ -25,7 +25,8 @@
     "react-scroll": "^1.8.9",
     "react-spinners": "^0.13.7",
     "swiper": "^8.4.6",
-    "wagmi": "^0.6.1"
+    "wagmi": "^0.6.1",
+    "web3-token": "^1.0.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

@@ -6,9 +6,9 @@ export default async function handler(req, res) {
   const { secret } = req.headers;
   const { config } = req.body;
 
-  // if (!secret || secret !== process.env.HMDT_API_SECRET) {
-  //   return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
-  // }
+  if (!secret || secret !== process.env.HMDT_API_SECRET) {
+    return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
+  }
   console.log("BODY -- ", req.body);
   console.log("--METHOD USED-- ", method);
   try {
