@@ -4,8 +4,10 @@ import { RainbowKitProvider, midnightTheme } from "@rainbow-me/rainbowkit";
 import { chain, WagmiConfig } from "wagmi";
 import { chains, wagmiClient } from "../utils/walletHelper";
 import { UserProvider } from "../context/UserContext";
+import { SessionProvider } from "../context/SessionContext";
 import "../styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
+import cookie from "js-cookie";
 
 export default function App({ Component, pageProps }) {
   const [showChild, setShowChild] = useState(false);
@@ -36,11 +38,13 @@ export default function App({ Component, pageProps }) {
             initialChain={chain.mainnet}
             theme={midnightTheme()}
           >
-            <UserProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </UserProvider>
+            <SessionProvider>
+              <UserProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </UserProvider>
+            </SessionProvider>
           </RainbowKitProvider>
         </WagmiConfig>
       </>

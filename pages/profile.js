@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useAccount, useProvider } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { UserContext } from "../context/UserContext";
+import { SessionContext } from "../context/SessionContext";
 import PageTitle from "../components/PageTitle";
 import ModalComponent from "../components/Modal";
 import ResponseMessage from "../components/ResponseMessage";
@@ -13,14 +14,22 @@ import { IconContext } from "react-icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Slider from "../components/Slider";
 import NoAccount from "../components/NoAccount";
-import { transferHPFromUser } from "../utils/dbHelper";
 
 const profile = () => {
   const { isConnected } = useAccount();
+  const {
+    user,
+    validUser,
+    loadingUser,
+    handleUserEnrollment,
+    validateAndGetUser,
+    updateBid,
+  } = useContext(UserContext);
+  const { session, setSession, handleDisconnect } = useContext(SessionContext);
 
   return (
     <div className="w-full mt-[70px]">
-      {isConnected ? (
+      {isConnected && validUser && session ? (
         <UserDashboard />
       ) : (
         <div className="w-full flex items-center justify-center">
@@ -34,11 +43,21 @@ const profile = () => {
 };
 
 const UserDashboard = () => {
-  const { user } = useContext(UserContext);
+  const {
+    user,
+    validUser,
+    loadingUser,
+    handleUserEnrollment,
+    validateAndGetUser,
+    updateBid,
+  } = useContext(UserContext);
+  const { session, setSession, handleDisconnect } = useContext(SessionContext);
+
+  useEffect(() => {}, [validUser, session]);
   return (
     <div className="h-full min-w-screen items-center flex flex-col gap-[1.5rem] p-[2rem]">
       <PageTitle text="Help Me Profile" />
-      {user ? (
+      {validUser && session ? (
         <div className="flex flex-col items-center lg:items-stretch lg:flex-row gap-[1.5rem] lg:gap-[1rem] w-full">
           <ProfileSection />
           <BalanceSection />
@@ -61,14 +80,14 @@ const SectionWrapper = ({ children }) => {
 };
 
 const BalanceSection = () => {
-  const { user, updateUser } = useContext(UserContext);
+  const { user, transferHP } = useContext(UserContext);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [transferAmount, setTransferAmount] = useState(0);
   const [transferError, setTransferError] = useState(null);
   const [transferSuccess, setTransferSuccess] = useState(null);
   const [transferToAddress, setTransferToAddress] = useState(null);
 
-  const transferHP = async () => {
+  const transfer = async () => {
     let transferAmountInt = Math.round(transferAmount);
     if (transferAmount <= 0 || !transferToAddress) {
       setTransferError("Must have an amount > 0 and valid address");
@@ -103,30 +122,23 @@ const BalanceSection = () => {
       }, 2500);
       return;
     }
-    let userToUpdate = {
-      ...user,
-      totalBalance: user?.totalBalance - transferAmountInt,
-    };
     let transferPayload = {
-      user: userToUpdate,
+      totalBalance: user?.totalBalance - transferAmountInt,
       transferAmount,
       transferToAddress: transferToAddress.trim(),
     };
-    try {
-      let data = await transferHPFromUser(transferPayload);
-      await updateUser({ user: data.user });
-      setTransferSuccess("Successfully transferred HPD!");
+    let { success, message } = await transferHP(transferPayload);
+    if (success) {
+      setTransferSuccess(message);
       setTimeout(() => {
         setTransferSuccess(null);
         setTransferAmount(0);
         setTransferToAddress(null);
         setShowTransferModal(false);
       }, 2500);
-    } catch (err) {
+    } else {
       console.log(err);
-      setTransferError(
-        "500 Error: Ensure transfer to address that is a registered holder of HMDT"
-      );
+      setTransferError(message);
       setTimeout(() => {
         setTransferError(null);
       }, 2500);
@@ -229,7 +241,7 @@ const BalanceSection = () => {
             />
           </div>
           <MainButton
-            onClick={async () => await transferHP()}
+            onClick={async () => await transfer()}
             ariaLabel="Transfer Button"
           >
             Transfer HP
@@ -242,18 +254,14 @@ const BalanceSection = () => {
 };
 
 const ProfileSection = () => {
-  const { user, updateUser } = useContext(UserContext);
+  const { user, setOffChainWallet } = useContext(UserContext);
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const [offChainWallet, setOffChainWallet] = useState(null);
+  const [offChainWallet, setOCW] = useState(null);
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
 
   const updateOffChainWallet = async () => {
     if (offChainWallet === "") return;
-    let userToUpdate = {
-      ...user,
-      offChainWallet: offChainWallet.trim(),
-    };
     if (!isValidAddress(offChainWallet.trim())) {
       setOCWError("Not a valid ERC20 address");
       setTimeout(() => {
@@ -261,15 +269,15 @@ const ProfileSection = () => {
       }, 2500);
       return;
     }
-    try {
-      await updateUser({ user: userToUpdate });
-      setOCWSuccess("Successfully set off chain wallet!");
+    let { success, message } = await setOffChainWallet(offChainWallet.trim());
+    if (success) {
+      setOCWSuccess(message);
       setTimeout(() => {
         setOCWSuccess(null);
         setShowWalletModal(false);
       }, 1500);
-    } catch (err) {
-      setOCWError(err.message);
+    } else {
+      setOCWError(message);
       setTimeout(() => {
         setOCWError(null);
       }, 1500);
@@ -355,7 +363,7 @@ const ProfileSection = () => {
             type="text"
             placeholder="Enter Address"
             className="h-[45px] w-[250px] md:w-[400px] border-2 border-slate-700 rounded pl-2 text-[#FAFAFA] bg-[#141414] overflow-hidden font-vcr"
-            onChange={(e) => setOffChainWallet(e.target.value)}
+            onChange={(e) => setOCW(e.target.value)}
             value={offChainWallet}
           />
           <motion.button

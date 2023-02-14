@@ -1,36 +1,41 @@
-const Web3Token = require("web3-token");
+const { getUserNFTCount } = require("../../utils/dbHelper");
 import User from "../../lib/models/User";
 import connectMongo from "../../lib/connectMongo";
 
+const defaultUser = {
+  totalBalance: 0,
+  offChainWallet: "",
+  designatedAddress: "",
+};
+
 export default async function handler(req, res) {
   const method = req.method;
-  console.log(req.headers);
+  if (method !== "POST") res.status(400).send({ message: "WRONG HTTP METHOD" });
+  let { address } = req.body;
 
   try {
-    // getting token from authorization header ... for example
-    const { token } = req.headers;
-    console.log(token);
-    console.log("GOT TOKEN");
-    const { address, body } = await Web3Token.verify(token);
-    console.log({ address }, { body });
-    // now you can find that user by his address
-    // (better to do it case insensitive)
-    let currentTime = new Date();
-    console.log({ currentTime });
-
     await connectMongo();
     let user = await getUser(address);
-    console.log({ user });
-    res.send(user);
+    let nftCount = await getUserNFTCount(address);
+    if (!user && nftCount === 0) {
+      res.send(false);
+    } else if (!user && nftCount > 0) {
+      let newUser = new User({ ...defaultUser, address });
+      let returnedNew = await User.create(newUser, { new: true });
+      res.send(true);
+    }
+    res.send(true);
   } catch (err) {
     console.error(err);
+    if (err.message === "Token expired" || err.message === "Token malformed") {
+      res.status(401).send(err);
+    }
     res.status(500).send(err);
   }
 }
 
 const getUser = async (address) => {
   try {
-    await connectMongo();
     let searchAddress = new RegExp(`${address}`, "i");
     const user = await User.findOne({
       $or: [

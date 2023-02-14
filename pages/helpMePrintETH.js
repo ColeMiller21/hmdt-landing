@@ -14,6 +14,7 @@ import Countdown from "../components/Countdown";
 import PageTitle from "../components/PageTitle";
 import NotConnected from "../components/NotConnected";
 import { UserContext } from "../context/UserContext";
+import { SessionContext } from "../context/SessionContext";
 import Loader from "../components/Loader";
 import { hmpeQuestions } from "../data/faq/hmpeFAQ";
 import { validateBidAmount } from "../utils/bidHelper.js";
@@ -38,7 +39,15 @@ export async function getStaticProps(ctx) {
 }
 
 const helpMePrintETH = ({ users, config }) => {
-  const { user, updateUser, loadingUser } = useContext(UserContext);
+  const {
+    user,
+    validUser,
+    loadingUser,
+    handleUserEnrollment,
+    validateAndGetUser,
+    updateBid,
+  } = useContext(UserContext);
+  const { session, setSession, handleDisconnect } = useContext(SessionContext);
   const { address, isConnected } = useAccount();
   const [topBidders, setTopBidders] = useState(users);
   const [showModal, setShowModal] = useState(false);
@@ -55,26 +64,8 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const submitBid = async (bidAmount) => {
-    bidAmount = Math.round(bidAmount);
-    let { success, message } = validateBidAmount(bidAmount, user);
-    if (!success) {
-      return { success, message };
-    }
-    let userToUpdate = { ...user, bidAmount };
-    try {
-      let { data } = await axios.put(
-        `/api/user`,
-        { user: userToUpdate },
-        { headers }
-      );
-      console.log(data);
-      await updateUser({ user: data.user });
-      await updateTopBidders();
-      return { success: true, message: "Bid Submitted Successfully" };
-    } catch (err) {
-      console.error("ERROR: ", err);
-      return { success: false, message: err.message };
-    }
+    await updateBid(bidAmount);
+    await updateTopBidders();
   };
 
   const triggerModal = async () => {
@@ -108,27 +99,24 @@ const helpMePrintETH = ({ users, config }) => {
   };
 
   const enrollUser = async () => {
-    let userToUpdate = {
-      ...user,
-      enrolled: true,
+    let payload = {
+      enroll: true,
       bidAmount:
         ifUserEnrollAmount !== null ? ifUserEnrollAmount : user?.bidAmount,
       totalBalance:
         newTotalBalance !== null ? newTotalBalance : user?.totalBalance,
     };
     try {
-      let { data } = await axios.put(
-        "/api/enrollUser",
-        { user: userToUpdate },
-        { headers }
-      );
-      await updateUser({ user: data.user });
+      let { success, message } = await handleUserEnrollment(payload);
       await updateTopBidders();
-      setEnrollSuccess("Successfully enrolled!");
-      setTimeout(() => {
-        setEnrollSuccess(null);
-      }, 2500);
-      setShowModal(false);
+      if (success) {
+        setEnrollSuccess("Successfully enrolled!");
+        setTimeout(() => {
+          setEnrollSuccess(null);
+        }, 2500);
+        setShowModal(false);
+      } else {
+      }
     } catch (err) {
       console.log(err);
       setEnrollError(err.message);
@@ -143,29 +131,21 @@ const helpMePrintETH = ({ users, config }) => {
     if (typeof newTotalBalance !== "number") {
       return;
     }
-    let userToUpdate = {
-      ...user,
-      enrolled: false,
+    let payload = {
+      enroll: false,
       totalBalance: newTotalBalance,
     };
-
-    try {
-      let { data } = await axios.put(
-        "/api/enrollUser",
-        { user: userToUpdate },
-        { headers }
-      );
-      await updateUser({ user: data.user });
-      await updateTopBidders();
-      setEnrollSuccess("Successfully unenrolled!");
+    let { success, message } = await handleUserEnrollment(payload);
+    await updateTopBidders();
+    if (success) {
+      setEnrollSuccess(message);
       setTimeout(() => {
         setEnrollSuccess(null);
       }, 2500);
       setShowUnenrollModal(false);
-    } catch (err) {
-      console.log(err);
+    } else {
       setShowUnenrollModal(false);
-      setEnrollError(err.message);
+      setEnrollError(message);
       setTimeout(() => {
         setEnrollError(null);
       }, 2500);
@@ -178,7 +158,7 @@ const helpMePrintETH = ({ users, config }) => {
         await updateTopBidders();
       })();
     }
-  }, [user]);
+  }, [user, session]);
 
   return (
     <>
@@ -197,18 +177,20 @@ const helpMePrintETH = ({ users, config }) => {
               <Loader />
             ) : (
               <div className="flex flex-col justify-center items-center w-full gap-[1.5rem]">
-                {isConnected ? (
-                  <UserActionSection submitBid={submitBid} />
+                {isConnected && validUser && session ? (
+                  <>
+                    <UserActionSection submitBid={updateBid} />
+                    <RaffleSection
+                      enrollUser={triggerModal}
+                      unenrollUser={() => setShowUnenrollModal(true)}
+                      raffleThreshold={config?.raffleThreshold}
+                      error={enrollError}
+                      success={enrollSuccess}
+                    />
+                  </>
                 ) : (
                   <NotConnected />
                 )}
-                <RaffleSection
-                  enrollUser={triggerModal}
-                  unenrollUser={() => setShowUnenrollModal(true)}
-                  raffleThreshold={config?.raffleThreshold}
-                  error={enrollError}
-                  success={enrollSuccess}
-                />
               </div>
             )}
             <div className="flex justify-center items-center w-full">

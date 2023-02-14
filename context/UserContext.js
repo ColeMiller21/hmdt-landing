@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import { getUser } from "../utils/dbHelper";
 import axios from "axios";
-import Web3Token from "web3-token";
-import { getDisplayName, getUserNFTCount } from "../utils/dbHelper";
 import { useAccount, useProvider, useSigner, useNetwork } from "wagmi";
+import { fetchEnsName } from "@wagmi/core";
+import { SessionContext } from "./SessionContext";
+import { validateBidAmount } from "../utils/bidHelper";
 
 export const UserContext = createContext();
 
@@ -13,125 +14,175 @@ export function UserProvider({ children }) {
   const storedUser = sessionStorage.getItem("user");
   const [user, setUser] = useState(storedUser ? JSON.parse(storedUser) : null);
   const [loadingUser, setLoadingUser] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const headers = {
-    token,
-  };
+  const [validUser, setValidUser] = useState(false);
+  const { session, setSession } = useContext(SessionContext);
 
-  // useEffect(() => {
-  //   console.log("IN INIT");
-  //   if (!isConnected) {
-  //     console.log("not connected");
-  //     setToken(null);
-  //     localStorage.removeItem("token");
-  //     setStatus(0);
-  //     return;
-  //   }
-  //   async function fetchData() {
-  //     // here you can use your own endpoint and method to get the user
-  //     try {
-  //       if (!token) {
-  //         console.log(
-  //           "No token do a function to set the user to null and have them re sign a message"
-  //         );
-  //         await triggerSignAndGenerateToken(signer);
-  //         console.log("DONE WITH GETTING TOKEN");
-  //       }
-  //       console.log("VALIDATING....");
-  //       let u = await validateAndGetUser();
-  //       console.log("GOT USER", u);
-  //       setUser(u);
-  //       setStatus(null);
-  //       setLoadingUser(true);
-  //       let user = await getUser(address);
-  //       setUser(user);
-  //       setLoadingUser(false);
-  //       sessionStorage.setItem("user", JSON.stringify(user));
-  //     } catch (err) {
-  //       console.log("CAUGHT IN VALIDATE USER: ", err);
-  //       console.error(err);
-  //       setLoadingUser(false);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [isConnected, signer]);
-
-  // useEffect(() => {
-  //   console.log("ADDRESS CHANGE");
-
-  //   const checkAddressChange = (add) => {
-  //     if (add === user?.address || add === user?.offChainAddress) {
-  //       console.log("Valid address");
-  //       return;
-  //     }
-  //     //1 status equals connected but no valid token
-  //     console.log("Not a valid address setting Status to 1 to sign in");
-  //     setStatus(1);
-  //   };
-  //   checkAddressChange(address);
-  // }, [address]);
-
-  const triggerSignAndGenerateToken = async () => {
-    console.log({ signer });
-    if (!signer) return;
-    const t = await Web3Token.sign(
-      async (msg) => await signer.signMessage(msg),
-      {
-        domain: "helpmedebugthis.com",
-        statement:
-          "I am authorizing the use of my address to bid and enroll using $HP",
-        expires_in: "1 hour",
+  useEffect(() => {
+    async function fetchData() {
+      // here you can use your own endpoint and method to get the user
+      try {
+        let user = await getUser(address);
+        setUser(user);
+        setLoadingUser(false);
+        sessionStorage.setItem("user", JSON.stringify(user));
+      } catch (err) {
+        console.log("CAUGHT IN VALIDATE USER: ", err);
+        console.error(err);
+        setLoadingUser(false);
       }
-    );
-    console.log("NEW TOKEN: ", { t });
-    setToken(t);
-    localStorage.setItem("token", t);
-  };
+    }
+    fetchData();
+  }, [isConnected, signer]);
+
+  useEffect(() => {
+    const checkAddressChange = async (add) => {
+      if (add === user?.address || add === user?.offChainWallet) {
+        setValidUser(true);
+        return;
+      }
+      let { data: isValid } = await axios.post("/api/verifyUser", {
+        address: add,
+      });
+      setValidUser(isValid);
+      setSession(null);
+      if (!isValid) {
+        setValidUser(false);
+        setUser(null);
+      }
+    };
+    checkAddressChange(address);
+  }, [address]);
 
   const validateAndGetUser = async () => {
-    let { data } = await axios.get("/api/validateAndGetUser", { headers });
+    let { data } = await axios.get("/api/validateAndGetUser");
+    console.log("IN GET USER");
+    console.log(data);
     return data;
   };
 
-  const updateBid = async () => {
-    if (!token) {
-      console.log("NO TOKEN: ", { token });
-      return;
-    }
-    let { data } = await axios.post(
-      "/api/updateBid",
-      { bidAmount: 11 },
-      { headers }
-    );
-    setUser(data);
-  };
-
-  const handleUserEnrollment = async () => {
-    if (!token) {
-      console.log("NO TOKEN: ", { token });
-      return;
+  const updateBid = async (bidAmount) => {
+    bidAmount = Math.round(bidAmount);
+    let { success, message } = validateBidAmount(bidAmount, user);
+    if (!success) {
+      return { success, message };
     }
     try {
-      let { data } = await axios.post(
-        "/api/enrollUser",
-        { enroll: false },
-        { headers }
-      );
+      let { data } = await axios.post("/api/updateBid", { bidAmount });
       setUser(data);
-    } catch (error) {
-      console.error("ERROR IN USER ENROLLMENT: ", error);
+      return { success: true, message: "Bid Submitted Successfully" };
+    } catch (err) {
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: err.message,
+      };
     }
   };
 
-  const handleError = async () => {
-    //need to read the message from here
-    //if(message === "Token expired") clear token and set status to 1
+  const handleUserEnrollment = async (enrollInformation) => {
+    try {
+      let { data } = await axios.post("/api/enrollUser", {
+        payload: enrollInformation,
+      });
+      setUser(data);
+      return {
+        success: true,
+        message: enrollInformation.enroll
+          ? "Successfully enrolled!"
+          : "Successfully unenrolled!",
+      };
+    } catch (err) {
+      console.error("ERROR IN USER ENROLLMENT: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
   };
+
+  const setOffChainWallet = async (offChainWallet) => {
+    try {
+      let { data } = await axios.post("/api/setOffChainWallet", {
+        offChainWallet,
+      });
+      setUser(data);
+      return {
+        success: true,
+        message: "Successfully set off chain wallet!",
+      };
+    } catch (err) {
+      console.error("ERROR IN SET OFF CHAIN WALLET: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
+  };
+
+  const transferHP = async (transferPayload) => {
+    try {
+      let { data } = await axios.post("/api/transfer", { transferPayload });
+      setUser(data.user);
+      return { success: true, message: "Successfully transferred HPD!" };
+    } catch (err) {
+      console.error("ERROR IN TRANSFER: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message:
+          "500 Error: Ensure transfer to address that is a registered holder of HMDT",
+      };
+    }
+  };
+
+  const handleError = async () => {};
 
   return (
     <UserContext.Provider
-      value={{ user, loadingUser, status, handleUserEnrollment, updateBid }}
+      value={{
+        user,
+        validUser,
+        loadingUser,
+        handleUserEnrollment,
+        updateBid,
+        validateAndGetUser,
+        setOffChainWallet,
+        transferHP,
+      }}
     >
       {children}
     </UserContext.Provider>

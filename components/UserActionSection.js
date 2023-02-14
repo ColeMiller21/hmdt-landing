@@ -6,10 +6,9 @@ import ResponseMessage from "./ResponseMessage";
 import MainButton from "./MainButton";
 import { IconContext } from "react-icons";
 import { Link as ScrollLink } from "react-scroll";
-import NoAccount from "./NoAccount";
 
 const UserActionSection = ({ submitBid }) => {
-  let { user } = useContext(UserContext);
+  let { user, validUser } = useContext(UserContext);
   const [bidAmount, setBidAmount] = useState(0);
   const [errorText, setErrorText] = useState("");
   const [successText, setSuccessText] = useState("");
@@ -17,24 +16,24 @@ const UserActionSection = ({ submitBid }) => {
   const userSubmit = async (e) => {
     e.preventDefault();
     let { success, message } = await submitBid(bidAmount);
-    if (!success) {
+    if (success) {
+      setSuccessText(message);
+      setBidAmount(0);
+      setTimeout(() => {
+        setSuccessText(null);
+      }, 2500);
+    } else {
       setErrorText(message);
       setTimeout(() => {
         setErrorText(null);
       }, 2500);
-      return;
     }
-    setSuccessText(message);
-    setBidAmount(0);
-    setTimeout(() => {
-      setSuccessText(null);
-    }, 2500);
   };
 
-  useEffect(() => {}, [user]);
+  useEffect(() => {}, [validUser, user]);
   return (
     <div className="border-1 border-slate-700 rounded flex flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]">
-      {user && user?.nftCount > 0 ? (
+      {validUser && user?.nftCount > 0 ? (
         <div className="flex flex-col w-full lg:gap-[1.5rem]">
           <h2 className="font-pixel text-[4vw] md:text-[2vw] text-center mb-[1rem] flex justify-center items-center">
             Bidding{" "}
@@ -96,7 +95,12 @@ const UserActionSection = ({ submitBid }) => {
           </div>
         </div>
       ) : (
-        <NoAccount />
+        // <NoAccount />
+        <>
+          Inactive User Cannot Bid is not holding an nft or associated with a
+          wallet who is. Please check Profile if you would like to check or
+          transfer remaining HP
+        </>
       )}
     </div>
   );

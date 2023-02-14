@@ -6,17 +6,13 @@ import User from "../../lib/models/User";
 export default async function handler(req, res) {
   const method = req.method;
   const { token } = req.cookies;
-  const { enroll, bidAmount, totalBalance } = req.body.payload;
+
+  const { offChainWallet } = req.body;
   try {
     await connectMongo();
     const { address, body } = await Web3Token.verify(token);
     console.log({ address }, { body });
-    let updatedUser = await enrollUser(
-      address,
-      enroll,
-      totalBalance,
-      bidAmount
-    );
+    let updatedUser = await setOffChainWallet(address, offChainWallet);
     res.status(200).send(updatedUser);
   } catch (err) {
     console.error(err);
@@ -28,12 +24,8 @@ export default async function handler(req, res) {
   }
 }
 
-const enrollUser = async (address, enroll, totalBalance, bidAmount) => {
+const setOffChainWallet = async (address, offChainWallet) => {
   let searchAddress = new RegExp(`${address}`, "i");
-  let insertObj = enroll
-    ? { enrolled: enroll, bidAmount, totalBalance }
-    : { enrolled: enroll, totalBalance };
-  console.log(insertObj);
   let updatedUser = await User.findOneAndUpdate(
     {
       $or: [
@@ -42,7 +34,7 @@ const enrollUser = async (address, enroll, totalBalance, bidAmount) => {
         { offChainWallet: searchAddress },
       ],
     },
-    { $set: insertObj },
+    { $set: { offChainWallet } },
     { new: true }
   );
   console.log(updatedUser);

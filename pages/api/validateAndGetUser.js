@@ -4,7 +4,7 @@ import connectMongo from "../../lib/connectMongo";
 
 export default async function handler(req, res) {
   const method = req.method;
-  const { token } = req.headers;
+  const { token } = req.cookies;
 
   if (method !== "GET") res.status(400).send({ message: "Read only route" });
   try {
@@ -17,10 +17,7 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error(err);
     console.log(err);
-    if (
-      err?.stack.includes("Token expired") ||
-      err?.stack.includes("Token malformed")
-    ) {
+    if (err.message === "Token expired" || err.message === "Token malformed") {
       res.status(401).send(err);
     }
     res.status(500).send(err);
