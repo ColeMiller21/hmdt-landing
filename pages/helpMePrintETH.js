@@ -81,10 +81,10 @@ const helpMePrintETH = ({ users, config }) => {
     let balanceAfterEnrollment = userAvailableBalance - config?.raffleThreshold;
     if (balanceAfterEnrollment < 0) {
       let ifUseBidAmountBalance = balanceAfterEnrollment + user?.bidAmount;
-      let totalBalance = balanceAfterEnrollment + user?.totalBalance;
+      let totalBalance = user?.totalBalance - config?.raffleThreshold;
       setModalMessage(`Your current bid amount does not leave you with enough HP to enter the raffle.
                   Would you like to use some of you bid to cover the cost? This would reduce your 
-                  bid amount from ${user?.bidAmount} to ${ifUseBidAmountBalance} and use the remaining amount of your total balance.
+                  bid amount from ${user?.bidAmount} to ${ifUseBidAmountBalance} and your $HP balance will be ${totalBalance}.
                    Please confirm.`);
       setIfUserEnrollAmount(ifUseBidAmountBalance);
       setNewTotalBalance(totalBalance);
@@ -95,6 +95,7 @@ const helpMePrintETH = ({ users, config }) => {
     );
 
     let totalBalance = user?.totalBalance - config?.raffleThreshold;
+    console.log(totalBalance);
     setNewTotalBalance(totalBalance);
   };
 
@@ -106,20 +107,19 @@ const helpMePrintETH = ({ users, config }) => {
       totalBalance:
         newTotalBalance !== null ? newTotalBalance : user?.totalBalance,
     };
-    try {
-      let { success, message } = await handleUserEnrollment(payload);
-      await updateTopBidders();
-      if (success) {
-        setEnrollSuccess("Successfully enrolled!");
-        setTimeout(() => {
-          setEnrollSuccess(null);
-        }, 2500);
-        setShowModal(false);
-      } else {
-      }
-    } catch (err) {
-      console.log(err);
-      setEnrollError(err.message);
+    console.log({ payload });
+    return;
+    let { success, message } = await handleUserEnrollment(payload);
+    await updateTopBidders();
+    if (success) {
+      setEnrollSuccess(message);
+      setTimeout(() => {
+        setEnrollSuccess(null);
+      }, 2500);
+      setShowModal(false);
+    } else {
+      setEnrollError(message);
+      setShowModal(false);
       setTimeout(() => {
         setEnrollError(null);
       }, 2500);
