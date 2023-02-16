@@ -93,7 +93,6 @@ const helpMePrintETH = ({ users, config }) => {
     setModalMessage(
       "Awesome you have enough HP! You are qualified to sign up for the raffle!"
     );
-
     let totalBalance = user?.totalBalance - config?.raffleThreshold;
     console.log(totalBalance);
     setNewTotalBalance(totalBalance);
@@ -107,8 +106,6 @@ const helpMePrintETH = ({ users, config }) => {
       totalBalance:
         newTotalBalance !== null ? newTotalBalance : user?.totalBalance,
     };
-    console.log({ payload });
-    return;
     let { success, message } = await handleUserEnrollment(payload);
     await updateTopBidders();
     if (success) {
