@@ -15,6 +15,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Slider from "../components/Slider";
 import NoAccount from "../components/NoAccount";
 import { getUserNFTS } from "../utils/imageHelper";
+import Loader from "../components/Loader";
 
 const profile = () => {
   const { isConnected } = useAccount();
@@ -451,7 +452,13 @@ const NFTViewSection = ({ title, data, loading }) => {
               exit={{ opacity: 0, transition: { duration: 0.4 } }}
               className="w-full py-[1.5rem]"
             >
-              <Slider data={data} loading={loading} />
+              {loading ? (
+                <div className="">
+                  <Loader />
+                </div>
+              ) : (
+                <Slider data={data} />
+              )}
             </motion.div>
           )}
         </AnimatePresence>
