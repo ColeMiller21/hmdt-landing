@@ -14,6 +14,7 @@ import { IconContext } from "react-icons";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Slider from "../components/Slider";
 import NoAccount from "../components/NoAccount";
+import { getUserNFTS } from "../utils/imageHelper";
 
 const profile = () => {
   const { isConnected } = useAccount();
@@ -43,24 +44,45 @@ const profile = () => {
 };
 
 const UserDashboard = () => {
-  const {
-    user,
-    validUser,
-    loadingUser,
-    handleUserEnrollment,
-    validateAndGetUser,
-    updateBid,
-  } = useContext(UserContext);
+  const { user, validUser } = useContext(UserContext);
   const { session, setSession, handleDisconnect } = useContext(SessionContext);
+  const [hmdt, setHMDT] = useState(null);
+  const [hmgt, setHMGT] = useState(null);
+  const [loadingNFTs, setLoadingNFTs] = useState(false);
+
+  useEffect(() => {
+    setLoadingNFTs(true);
+    if (user) {
+      (async () => {
+        let { ownedHMDT, ownedHMGT } = await getUserNFTS(user?.address);
+        console.log({ ownedHMDT, ownedHMGT });
+        setHMDT(ownedHMDT);
+        setHMGT(ownedHMGT);
+        setLoadingNFTs(false);
+      })();
+    }
+  }, [user]);
 
   useEffect(() => {}, [validUser, session]);
   return (
     <div className="h-full min-w-screen items-center flex flex-col gap-[1.5rem] p-[2rem]">
       <PageTitle text="Help Me Profile" />
       {validUser && session ? (
-        <div className="flex flex-col items-center lg:items-stretch lg:flex-row gap-[1.5rem] lg:gap-[1rem] w-full">
-          <ProfileSection />
-          <BalanceSection />
+        <div className="flex flex-col items-center gap-[1.5rem] lg:gap-[1rem] w-full">
+          <div className="flex flex-col items-center lg:items-stretch lg:flex-row w-full lg:gap-[1rem]">
+            <ProfileSection />
+            <BalanceSection />
+          </div>
+          <NFTViewSection
+            title="HelpMeDebugThis"
+            data={hmdt}
+            loading={loadingNFTs}
+          />
+          <NFTViewSection
+            title="HelpMeGiftThis"
+            data={hmgt}
+            loading={loadingNFTs}
+          />
         </div>
       ) : (
         <div className="border-1 border-slate-700 rounded flex flex-col w-[90%] lg:w-[70%] px-[2rem] py-[1.25rem]">
@@ -383,35 +405,37 @@ const ProfileSection = () => {
   );
 };
 
-const NFTViewSection = ({ title }) => {
+const NFTViewSection = ({ title, data, loading }) => {
+  const { user } = useContext(UserContext);
   const [viewOpen, setViewOpen] = useState(false);
 
   const toggleView = () => {
     setViewOpen(!viewOpen);
   };
+
   return (
-    <AnimatePresence>
-      <IconContext.Provider
-        value={{
-          color: "#FAFAFA",
-          size: "1.5rem",
-          className: " hover:text-orange-500",
-        }}
-      >
-        <div className="w-full flex flex-col p-[2rem] font-vcr  border-1 border-slate-700 rounded">
-          <div className="flex justify-between items-center">
-            <h3 className="font-vcr text-[1.2rem] md:text-[2rem]">
-              <span className="text-orange-400">My </span>
-              {title}
-            </h3>
-            <span
-              aria-label="Dropdown Button"
-              onClick={toggleView}
-              className="cursor-pointer"
-            >
-              {viewOpen ? <FaChevronDown /> : <FaChevronUp />}
-            </span>
-          </div>
+    <IconContext.Provider
+      value={{
+        color: "#FAFAFA",
+        size: "1.5rem",
+        className: " hover:text-orange-500",
+      }}
+    >
+      <div className="w-full flex flex-col p-[2rem] font-vcr  border-1 border-slate-700 rounded">
+        <div className="flex justify-between items-center">
+          <h3 className="font-vcr text-[1.2rem] md:text-[2rem]">
+            <span className="text-orange-400">My </span>
+            {title}
+          </h3>
+          <span
+            aria-label="Dropdown Button"
+            onClick={toggleView}
+            className="cursor-pointer"
+          >
+            {viewOpen ? <FaChevronDown /> : <FaChevronUp />}
+          </span>
+        </div>
+        <AnimatePresence>
           {viewOpen && (
             <motion.div
               key="answer"
@@ -427,12 +451,12 @@ const NFTViewSection = ({ title }) => {
               exit={{ opacity: 0, transition: { duration: 0.4 } }}
               className="w-full py-[1.5rem]"
             >
-              <Slider type="hmdt" />
+              <Slider data={data} loading={loading} />
             </motion.div>
           )}
-        </div>
-      </IconContext.Provider>
-    </AnimatePresence>
+        </AnimatePresence>
+      </div>
+    </IconContext.Provider>
   );
 };
 
