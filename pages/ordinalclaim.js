@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import SEO from "../components/SEO";
-import FAQ from "../components/sections/FAQ";
+import FAQ from "../components/Sections/FAQ";
 import { motion } from "framer-motion";
 import { useAccount, useProvider } from "wagmi";
 import { UserContext } from "../context/UserContext";
