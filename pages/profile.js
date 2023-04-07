@@ -16,6 +16,7 @@ import Slider from "../components/Slider";
 import NoAccount from "../components/NoAccount";
 import { getUserNFTS } from "../utils/imageHelper";
 import Loader from "../components/Loader";
+import axios from "axios";
 
 const profile = () => {
   const { isConnected } = useAccount();
@@ -53,10 +54,10 @@ const UserDashboard = () => {
 
   useEffect(() => {
     setLoadingNFTs(true);
+
     if (user) {
       (async () => {
         let { ownedHMDT, ownedHMGT } = await getUserNFTS(user?.address);
-        console.log({ ownedHMDT, ownedHMGT });
         setHMDT(ownedHMDT);
         setHMGT(ownedHMGT);
         setLoadingNFTs(false);
@@ -73,6 +74,10 @@ const UserDashboard = () => {
           <div className="flex flex-col items-center lg:items-stretch lg:flex-row w-full lg:gap-[1rem]">
             <ProfileSection />
             <BalanceSection />
+          </div>
+          <div>
+            {/* THIS NEEDS TO CHANGE TO HMDT FROM HMGT */}
+            <ClaimStatusSection data={hmgt} loading={loadingNFTs} />
           </div>
           <NFTViewSection
             title="HelpMeDebugThis"
@@ -160,7 +165,6 @@ const BalanceSection = () => {
         setShowTransferModal(false);
       }, 2500);
     } else {
-      console.log(err);
       setTransferError(message);
       setTimeout(() => {
         setTransferError(null);
@@ -402,6 +406,65 @@ const ProfileSection = () => {
           <ResponseMessage error={ocwError} success={ocwSuccess} />
         </div>
       </ModalComponent>
+    </>
+  );
+};
+
+const ClaimStatusSection = ({ data, loading }) => {
+  const [ownedDebugs, setOwnedDebugs] = useState(data);
+  const getDebugClaimStatus = async () => {
+    let asyncCalls = [];
+    for (const metadata of data) {
+      asyncCalls.push(
+        await axios.get(`/api/getDebugStatus?id=${metadata.edition}`)
+      );
+    }
+    let debugData = await Promise.all(asyncCalls);
+    setOwnedDebugs(debugData.map((d) => d.data));
+  };
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      (async () => {
+        await getDebugClaimStatus();
+      })();
+    }
+  }, [data]);
+
+  return (
+    <>
+      <SectionWrapper>
+        <h3 className="text-[2rem] text-center">Ordinal Claim Status</h3>
+        <div className="w-full border-slate-700 border-1 my-[.8rem]"></div>
+        <div className="flex flex-col items-center gap-[1.5rem]">
+          <div className="w-full overflow-x-auto flex-grow">
+            <table className="table-auto w-full text-center">
+              <thead>
+                <tr className="">
+                  <th className="px-4 py-2">Token ID</th>
+                  <th className="px-4 py-2">Claim Amount</th>
+                  <th className="px-4 py-2">Claim Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ownedDebugs?.map((d) => {
+                  return (
+                    <tr className="">
+                      <td className="px-4 py-2">{d.id}</td>
+                      <td className=" px-4 py-2 text-orange-400">
+                        {d.claimAmount}
+                      </td>
+                      <td className=" px-4 py-2 text-orange-400">
+                        {d.claimStatus}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </SectionWrapper>
     </>
   );
 };

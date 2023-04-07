@@ -6,9 +6,6 @@ export default async function handler(req, res) {
   const { secret } = req.headers;
   const { user } = req.body;
 
-  if (!secret || secret !== process.env.HMDT_API_KEY) {
-    return res.status(403).send({ message: "NOT AN AUTHORIZED DEBBUGER" });
-  }
   try {
     switch (method) {
       case "GET":
@@ -27,6 +24,11 @@ export default async function handler(req, res) {
         }
         break;
       case "POST":
+        if (!secret || secret !== process.env.HMDT_API_KEY) {
+          return res
+            .status(403)
+            .send({ message: "NOT AN AUTHORIZED DEBBUGER" });
+        }
         if (!user) throw new Error("No user found in request body");
         let createdUser = await createUser(user);
         res
@@ -34,6 +36,11 @@ export default async function handler(req, res) {
           .send({ message: "Successfully created user!", user: createdUser });
         break;
       case "PUT":
+        if (!secret || secret !== process.env.HMDT_API_KEY) {
+          return res
+            .status(403)
+            .send({ message: "NOT AN AUTHORIZED DEBBUGER" });
+        }
         if (!user) throw new Error("No user found in request body");
         let updatedUser = await updateUser(user);
         res.send({ message: "Successfully updated user!", user: updatedUser });

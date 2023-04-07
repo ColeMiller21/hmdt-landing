@@ -55,8 +55,6 @@ export function UserProvider({ children }) {
 
   const validateAndGetUser = async () => {
     let { data } = await axios.get("/api/validateAndGetUser");
-    console.log("IN GET USER");
-    console.log(data);
     return data;
   };
 
@@ -169,6 +167,93 @@ export function UserProvider({ children }) {
     }
   };
 
+  const setBtcWallet = async (btcWallet) => {
+    try {
+      let { data } = await axios.post("/api/setBtcWallet", {
+        btcWallet,
+      });
+      setUser(data);
+      return {
+        success: true,
+        message: "Successfully set btc wallet!",
+      };
+    } catch (err) {
+      console.error("ERROR IN SET BTC WALLET: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: err.message,
+      };
+    }
+  };
+
+  const initClaim = async (tokenId) => {
+    try {
+      let { data } = await axios.post("/api/initClaim", {
+        tokenId,
+      });
+
+      return {
+        success: true,
+        message: "Successfully started claim!",
+        data,
+      };
+    } catch (err) {
+      console.log(err);
+      console.error("ERROR IN START CLAIM: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: "Error initializing claim. Please reach out in discord",
+      };
+    }
+  };
+
+  const startClaim = async (tokenId) => {
+    try {
+      let { data } = await axios.post("/api/startClaim", {
+        tokenId,
+      });
+      setUser(data.user);
+      return {
+        success: true,
+        message: "Successfully started claim!",
+        updatedNft: data.nft,
+      };
+    } catch (err) {
+      console.log(err);
+      console.error("ERROR IN START CLAIM: ", err.message);
+      if (err.message.includes("401")) {
+        setTimeout(() => {
+          setSession(null);
+        }, 1500);
+        return {
+          success: false,
+          message: "Login expired. Will be prompted to sign in again.",
+        };
+      }
+      return {
+        success: false,
+        message: "Error initializing claim. Please reach out in discord",
+      };
+    }
+  };
   const handleError = async () => {};
 
   return (
@@ -182,6 +267,9 @@ export function UserProvider({ children }) {
         validateAndGetUser,
         setOffChainWallet,
         transferHP,
+        setBtcWallet,
+        initClaim,
+        startClaim,
       }}
     >
       {children}

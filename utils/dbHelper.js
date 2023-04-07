@@ -61,4 +61,26 @@ const getUserNFTCount = async (address) => {
   return nftCount;
 };
 
-export { getUser, getUserNFTCount, getDisplayName, transferHPFromUser };
+const getOwnerOfToken = async (tokenId) => {
+  let contract = getContract(ALCHEMY_PROVIDER, "hmdt");
+  console.log({ tokenId });
+  let ownerAddress = await contract.functions.ownerOf(tokenId);
+  return ownerAddress;
+};
+
+const getOwnerOfGift = async (tokenId) => {
+  let contract = getContract(ALCHEMY_PROVIDER, "hmgt");
+  console.log({ tokenId });
+  let ownerAddress = await contract.functions.ownerOf(tokenId);
+  console.log(ownerAddress);
+  return ownerAddress;
+};
+
+export {
+  getUser,
+  getUserNFTCount,
+  getDisplayName,
+  transferHPFromUser,
+  getOwnerOfToken,
+  getOwnerOfGift,
+};

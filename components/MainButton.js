@@ -1,16 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const MainButton = ({ children, onClick, ariaLabel, width }) => {
+const MainButton = ({
+  children,
+  onClick,
+  ariaLabel,
+  width,
+  ...buttonProps
+}) => {
   return (
     <motion.button
+      {...buttonProps}
       type="button"
       aria-label={ariaLabel}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: buttonProps.disabled ? 1 : 1.02 }}
+      whileTap={{ scale: buttonProps.disabled ? 1 : 0.98 }}
       className={`px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr ${
         width ? width : "w-[70%] md:w-[40%] "
-      } text-center font-vcr hover:bg-slate-600`}
+      } ${buttonProps.disabled && "cursor-not-allowed"} 
+      text-center font-vcr ${!buttonProps.disabled && "hover:bg-slate-600"}`}
       onClick={onClick}
     >
       {children}
