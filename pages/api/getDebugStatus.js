@@ -6,7 +6,6 @@ export default async function handler(req, res) {
   try {
     await connectMongo();
     let debug = await getDebug(id);
-
     res.status(200).send(debug);
   } catch (err) {
     console.error(err);

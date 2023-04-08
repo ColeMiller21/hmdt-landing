@@ -47,7 +47,7 @@ const DebugStatusSection = () => {
   const checkDebugStatus = async () => {
     if (!tokenId) return;
     let { data } = await axios.get(`/api/getDebugStatus?id=${tokenId}`);
-    data.image = `https://fafz.mypinata.cloud/ipfs/QmXoSBGRCCpmknPkorYeJto91knX67EgmaQGPwZAG2Vk4x/${tokenId}.png`;
+    data.image = `https://fafz.mypinata.cloud/ipfs/QmS3g1MArz2x45SNjYmADoeVdrP7wkH9qAZGksEAQrSKJk/${tokenId}.png`;
     setSelectedDebug(data);
   };
 
@@ -209,7 +209,7 @@ const ClaimSection = () => {
                   }
                 >
                   <option value="">TokenID</option>
-                  {hmgt?.map((h, i) => {
+                  {hmdt?.map((h, i) => {
                     return (
                       <option key={h.edition} value={Number(h.edition)}>
                         {h.edition}
@@ -233,7 +233,6 @@ const ClaimSection = () => {
                   </span>
                 </span>
               )}
-
               <div className="w-full flex flex-col items-center justify-center">
                 <input
                   type="text"
@@ -269,6 +268,16 @@ const ClaimSection = () => {
                   >
                     Claim
                   </MainButton>
+                )}
+                {selectedNft && selectedNft.claimStatus === "claiming" && (
+                  <span className="font-vcr">
+                    Status - <span className="text-orange-400">Claiming</span>
+                  </span>
+                )}
+                {selectedNft && selectedNft.claimStatus === "claimed" && (
+                  <span className="font-vcr">
+                    Status - <span className="text-orange-400">Claimed</span>
+                  </span>
                 )}
                 {user?.btcWallet === "" && (
                   <span className="font-vcr mt-[5px]">
