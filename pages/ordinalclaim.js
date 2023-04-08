@@ -47,7 +47,7 @@ const DebugStatusSection = () => {
   const checkDebugStatus = async () => {
     if (!tokenId) return;
     let { data } = await axios.get(`/api/getDebugStatus?id=${tokenId}`);
-    data.image = `https://fafz.mypinata.cloud/ipfs/QmS3g1MArz2x45SNjYmADoeVdrP7wkH9qAZGksEAQrSKJk/${tokenId}.png`;
+    // data.image = `https://fafz.mypinata.cloud/ipfs/QmS3g1MArz2x45SNjYmADoeVdrP7wkH9qAZGksEAQrSKJk/${tokenId}.png`;
     console.log(data);
     setSelectedDebug(data);
   };
