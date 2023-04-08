@@ -127,8 +127,16 @@ const ClaimSection = () => {
   };
 
   const handleBtcWallet = async (btcWallet) => {
-    if (!btcWallet || user?.btcWallet.toLowerCase() === btcWallet.toLowerCase())
+    console.log({ btcWallet });
+    console.log({ user });
+    if (
+      !btcWallet ||
+      user?.btcWallet.toLowerCase() === btcWallet.toLowerCase()
+    ) {
+      console.log("bad");
       return;
+    }
+    console.log("gets here");
     let res = await setBtcWallet(btcWallet);
   };
 

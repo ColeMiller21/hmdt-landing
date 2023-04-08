@@ -3,9 +3,11 @@ import connectMongo from "../../lib/connectMongo";
 
 export default async function handler(req, res) {
   let { id } = req.query;
+  console.log({ id });
   try {
     await connectMongo();
     let debug = await getDebug(id);
+    console.log(debug);
     res.status(200).send(debug);
   } catch (err) {
     console.error(err);
