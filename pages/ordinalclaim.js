@@ -127,17 +127,18 @@ const ClaimSection = () => {
   };
 
   const handleBtcWallet = async (btcWallet) => {
-    console.log({ btcWallet });
-    console.log({ user });
     if (
       !btcWallet ||
       user?.btcWallet.toLowerCase() === btcWallet.toLowerCase()
     ) {
-      console.log("bad");
       return;
     }
-    console.log("gets here");
-    let res = await setBtcWallet(btcWallet);
+    let { success, message } = await setBtcWallet(btcWallet);
+    if (!success) {
+      setError(message);
+      return;
+    }
+    setSuccess(message);
   };
 
   const setError = (message) => {
