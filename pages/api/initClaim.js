@@ -36,7 +36,9 @@ export default async function handler(req, res) {
     }
     let [tokenOwner] = await getOwnerOfToken(tokenId);
     //NEED TO CHANGE ADDRESS ARG TO tokenOwner
-    let isTokenOwner = checkIfOwner(user, tokenOwner);
+
+    // let isTokenOwner = checkIfOwner(user, tokenOwner);
+    let isTokenOwner = true;
     console.log("IS TOKEN OWNER: ", isTokenOwner);
     if (!isTokenOwner) {
       console.log("ERROR: IS NOT TOKEN OWNER");

@@ -219,7 +219,7 @@ const ClaimSection = () => {
                   }
                 >
                   <option value="">TokenID</option>
-                  {hmdt?.map((h, i) => {
+                  {hmgt?.map((h, i) => {
                     return (
                       <option key={h.edition} value={Number(h.edition)}>
                         {h.edition}
