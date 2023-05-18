@@ -208,6 +208,7 @@ export function UserProvider({ children }) {
       };
     } catch (err) {
       console.log(err);
+      console.log(err.response.data);
       console.error("ERROR IN START CLAIM: ", err.message);
       if (err.message.includes("401")) {
         setTimeout(() => {

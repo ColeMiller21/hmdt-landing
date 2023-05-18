@@ -23,33 +23,31 @@ export default async function handler(req, res) {
       console.log("ERROR: NO DEBUG FOUND");
       res
         .status(500)
-        .send({ message: `No debug found for token id: ${tokenId}` });
+        .json({ error: `No debug found for token id: ${tokenId}` });
       return;
     }
     if (debug.claimStatus === "claiming" || debug.claimStatus === "unclaimed") {
       console.log("ERROR: DEBUG STATUS IS NOT CORRECT");
       res
         .status(500)
-        .send({ message: `Claim has already started for tokenId: ${tokenId}` });
+        .json({ error: `Claim has already started for tokenId: ${tokenId}` });
       return;
     }
     //checking available balance
     let availableBalance = user?.totalBalance - user?.bidAmount;
     if (availableBalance < debug.claimAmount) {
       console.log("ERROR: NOT ENOUGH HP");
-      res
-        .status(400)
-        .send({ message: "User does not have enough HP to claim" });
+      res.status(400).json({ error: "User does not have enough HP to claim" });
       return;
     }
     let [tokenOwner] = await getOwnerOfToken(tokenId);
     //need to take out address and move in tokenOwner
-    let isTokenOwner = checkIfOwner(user, tokenOWner);
+    let isTokenOwner = checkIfOwner(user, tokenOwner);
     if (!isTokenOwner) {
       console.log("ERROR: IS NOT OWNER");
       res
         .status(400)
-        .send({ message: `User is not the owner of token ${tokenId}` });
+        .json({ error: `User is not the owner of token ${tokenId}` });
       return;
     }
     let updateDebug = await updateDebugStatusToPending(tokenId);
@@ -59,9 +57,9 @@ export default async function handler(req, res) {
     console.error(err);
     console.log(err.message);
     if (err.message === "Token expired" || err.message === "Token malformed") {
-      res.status(401).send(err);
+      res.status(401).json(err);
     }
-    res.status(500).send(err.message);
+    res.status(500).json({ error: err.message });
   }
 }
 

@@ -24,14 +24,14 @@ export default async function handler(req, res) {
       console.log("ERROR: THERE IS NO DEBUG");
       res
         .status(500)
-        .send({ message: `No debug found for token id: ${tokenId}` });
+        .json({ RangeError: `No debug found for token id: ${tokenId}` });
       return;
     }
     if (debug.claimStatus === "pending") {
       console.log("ERROR: CLAIM STATUS ALREADY PENDING");
       res
         .status(500)
-        .send({ message: `Claim has already started for tokenId: ${tokenId}` });
+        .json({ error: `Claim has already started for tokenId: ${tokenId}` });
       return;
     }
     let [tokenOwner] = await getOwnerOfToken(tokenId);
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       console.log("ERROR: IS NOT TOKEN OWNER");
       res
         .status(400)
-        .send({ message: `User is not the owner of token ${tokenId}` });
+        .json({ error: `User is not the owner of token ${tokenId}` });
       return;
     }
     let updateDebug = await updateDebugStatusToPending(tokenId);
@@ -52,9 +52,9 @@ export default async function handler(req, res) {
     console.error(err);
     console.log(err.message);
     if (err.message === "Token expired" || err.message === "Token malformed") {
-      res.status(401).send(err);
+      res.status(401).json(err);
     }
-    res.status(500).send(err.message);
+    res.status(500).json({ error: err.message });
   }
 }
 

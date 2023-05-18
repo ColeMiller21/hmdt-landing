@@ -17,7 +17,8 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 function parseIPFS(ipfs) {
-  return ipfs.replace("ipfs://", "https://fafz.mypinata.cloud/ipfs/");
+  // return ipfs.replace("ipfs://", "https://fafz.mypinata.cloud/ipfs/");
+  return ipfs.replace("ipfs://", "https://ipfs.io/ipfs/");
 }
 
 export const getUserNFTS = async (address) => {
