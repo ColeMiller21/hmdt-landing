@@ -345,7 +345,7 @@ const ProfileSection = () => {
                 {user?.displayAddress}
               </span>
             </span>
-            <span className="flex justtify-between">
+            <span className="flex justify-between">
               <label className="mr-[5px]"> Delagate Address: </label>
               <span className="xl:hidden text-orange-400">
                 {user?.offChainWallet?.includes(".eth")
@@ -355,6 +355,15 @@ const ProfileSection = () => {
               <span className="hidden xl:block text-orange-400">
                 {user?.offChainWallet}
               </span>
+            </span>
+            <span className="flex justify-between w-full">
+              <label className="mr-[5px]"> BTC Address: </label>
+              <p className="lg:hidden text-orange-400">
+                {formatAddress(user?.btcWallet)}
+              </p>
+              <p className="hidden lg:block text-orange-400">
+                {user?.btcWallet}
+              </p>
             </span>
           </div>
           <div className="w-full flex items-center justify-center">
