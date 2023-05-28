@@ -281,11 +281,15 @@ const BalanceSection = () => {
 };
 
 const ProfileSection = () => {
-  const { user, setOffChainWallet } = useContext(UserContext);
+  const { user, setOffChainWallet, setBtcWallet } = useContext(UserContext);
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showBtcWalletModal, setShowBtcWalletModal] = useState(false);
   const [offChainWallet, setOCW] = useState(null);
+  const [userBtcWallet, setUserBtcWallet] = useState(null);
   const [ocwSuccess, setOCWSuccess] = useState(null);
   const [ocwError, setOCWError] = useState(null);
+  const [btcError, setBTCError] = useState(null);
+  const [btcSuccess, setBTCSuccess] = useState(null);
 
   const updateOffChainWallet = async () => {
     if (offChainWallet === "") return;
@@ -311,13 +315,28 @@ const ProfileSection = () => {
     }
   };
 
+  const handleBtcWallet = async (userBtcWallet) => {
+    if (
+      !userBtcWallet ||
+      user?.btcWallet.toLowerCase() === userBtcWallet.toLowerCase()
+    ) {
+      return;
+    }
+    let { success, message } = await setBtcWallet(userBtcWallet);
+    if (!success) {
+      setBTCError(message);
+      return;
+    }
+    setBTCSuccess(message);
+  };
+
   return (
     <>
       <SectionWrapper>
-        <div className="flex flex-col items-center min-h-full">
+        <div className="flex flex-col items-center min-h-full w-full">
           <h3 className="text-[2rem] text-center">Address Information</h3>
           <div className="w-full border-slate-700 border-1 my-[.8rem]"></div>
-          <h6 className="text-[1.2rem] flex ">
+          <h6 className="text-[1.2rem] flex w-full justify-center">
             <span className="mr-[5px]">Profile Status:</span>
             <span
               className={`${
@@ -327,7 +346,7 @@ const ProfileSection = () => {
               {user?.nftCount > 0 ? "ACTIVE" : "INACTIVE"}
             </span>
           </h6>
-          <div className="flex flex-col gap-[.8rem] my-[1.5rem] flex-grow justify-center">
+          <div className="flex flex-col gap-[.8rem] my-[1.5rem] flex-grow justify-center w-full">
             <span className="flex justify-between items-center">
               <label className="mr-[5px]">Connected Address: </label>
               <span className="hidden xl:block text-orange-400">
@@ -347,31 +366,31 @@ const ProfileSection = () => {
             </span>
             <span className="flex justify-between">
               <label className="mr-[5px]"> Delagate Address: </label>
-              <span className="xl:hidden text-orange-400">
+              <span className="text-orange-400">
                 {user?.offChainWallet?.includes(".eth")
                   ? user?.offChainWallet
                   : formatAddress(user?.offChainWallet)}
               </span>
-              <span className="hidden xl:block text-orange-400">
-                {user?.offChainWallet}
-              </span>
             </span>
             <span className="flex justify-between w-full">
               <label className="mr-[5px]"> BTC Address: </label>
-              <p className="lg:hidden text-orange-400">
+              <p className="text-orange-400">
                 {formatAddress(user?.btcWallet)}
-              </p>
-              <p className="hidden lg:block text-orange-400">
-                {user?.btcWallet}
               </p>
             </span>
           </div>
-          <div className="w-full flex items-center justify-center">
+          <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-[1rem]">
             <MainButton
               ariaLabel="Trigger Off Chain Wallet Modal"
               onClick={() => setShowWalletModal(true)}
             >
               Set Delegate Wallet
+            </MainButton>
+            <MainButton
+              ariaLabel="Trigger Off Chain Wallet Modal"
+              onClick={() => setShowBtcWalletModal(true)}
+            >
+              Set BTC Wallet
             </MainButton>
           </div>
         </div>
@@ -413,6 +432,45 @@ const ProfileSection = () => {
             Add Wallet
           </motion.button>
           <ResponseMessage error={ocwError} success={ocwSuccess} />
+        </div>
+      </ModalComponent>
+      <ModalComponent
+        onClose={() => setShowBtcWalletModal(false)}
+        show={showBtcWalletModal}
+      >
+        <div className="flex flex-col gap-[1.5rem] items-center justify-center p-[1rem] font-vcr text-white text-center">
+          <p className="">
+            Use the input below to set a wallet to use incase your HMDT is in a
+            wallet that cannot interact with etherscan or if you want to set an
+            delegate wallet
+          </p>
+          {user?.btcWallet ? (
+            <div className="text-center">
+              <p>Current BTC wallet:</p>
+              <p className="lg:hidden">{formatAddress(user?.btcWallet)}</p>
+              <p className="hidden lg:block">{user?.btcWallet}</p>
+            </div>
+          ) : (
+            <></>
+          )}
+          <input
+            type="text"
+            placeholder="Enter Address"
+            className="h-[45px] w-[250px] md:w-[400px] border-2 border-slate-700 rounded pl-2 text-[#FAFAFA] bg-[#141414] overflow-hidden font-vcr"
+            onChange={(e) => setUserBtcWallet(e.target.value)}
+            value={userBtcWallet}
+          />
+          <motion.button
+            type="button"
+            aria-label="Add Off Chain Wallet Button"
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.96 }}
+            className="px-[1.5rem] py-[.75rem] bg-slate-700 text-white text-vcr w-[70%] md:w-[40%] text-center font-vcr"
+            onClick={async () => await handleBtcWallet(userBtcWallet)}
+          >
+            Add/Update BTC Wallet
+          </motion.button>
+          <ResponseMessage error={btcError} success={btcSuccess} />
         </div>
       </ModalComponent>
     </>

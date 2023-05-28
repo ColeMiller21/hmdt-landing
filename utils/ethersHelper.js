@@ -18,7 +18,9 @@ export const reverseResolveAddress = async (provider, address) => {
 
 export const formatAddress = (address) => {
   if (!address || address?.includes(".eth")) return;
-  return `${address.substring(0, 3)}....${address.substring(36, 42)}`;
+  var first = address.slice(0, 4);
+  var last = address.slice(-6);
+  return `${first}....${last}`;
 };
 
 export const isValidAddress = (address) => {
